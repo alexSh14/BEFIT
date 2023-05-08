@@ -7,7 +7,7 @@
 #include <vector>
 #include <map>
 
-// Функция для вывода расписания занятий
+// Function for displaying the schedule of classes
 void printSchedule(const std::map<std::string, std::vector<std::string>>& schedule) {
     std::cout << "Fitness Class Schedule:\n";
     for (const auto& entry : schedule) {

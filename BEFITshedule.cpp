@@ -1,102 +1,90 @@
 ﻿// BEFITshedule.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 //
-
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
-#include <map>
 
-// Функция отображения расписания занятий
-void printSchedule(const std::map<std::string, std::vector<std::string>>& schedule) {
-    std::cout << "Fitness Class Schedule:\n";
-    for (const auto& entry : schedule) {
-        std::cout << entry.first << ":\n";
-        for (const auto& day : entry.second) {
-            std::cout << "  " << day << '\n';
-        }
-    }
-}
-
-// Функция для записи клиента на занятие
-void signUp(const std::string& class_name, const std::string& day) {
-    // Открытие файла для записи, добавление записи в конец файла
-    std::ofstream outfile(class_name + "_" + day + ".txt", std::ios_base::app);
-    if (!outfile.is_open()) {
-        std::cout << "Unable to open file for writing\n";
-        return;
-    }
-
+class YogaClass {
+public:
     std::string name;
-    std::cout << "Enter your name:\n";
-    std::cin >> name;
+    std::string instructor;
+    std::string time;
+    int capacity;
+    int enrolled;
 
-    outfile << name << '\n';
-    outfile.close();
+    YogaClass(std::string name, std::string instructor, std::string time, int capacity) {
+        this->name = name;
+        this->instructor = instructor;
+        this->time = time;
+        this->capacity = capacity;
+        this->enrolled = 0;
+    }
 
-    std::cout << "You have successfully signed up for " << class_name << " on " << day << ".\n";
-}
+    bool isFull() {
+        return enrolled >= capacity;
+    }
 
-int main() {
-    std::ifstream file("schedule.txt");
-    std::string line;
-    std::string current_day = "";
-    std::map<std::string, std::vector<std::string>> schedule;
+    void enroll() {
+        if (!isFull()) {
+            enrolled++;
+            std::cout << "You have successfully enrolled in " << name << std::endl;
+        }
+        else {
+            std::cout << "Sorry, " << name << " is already full." << std::endl;
+        }
+    }
+};
+class YogaSchedule {
+public:
+    std::vector<YogaClass> classes;
 
-    if (file.is_open()) {
-        while (std::getline(file, line)) {
-            if (line.back() == ':') {
-                current_day = line;
-            }
-            else if (line.find("yoga") != std::string::npos || line.find("zumba") != std::string::npos) {
-                schedule[line].push_back(current_day);
+    void addClass(YogaClass yogaClass) {
+        classes.push_back(yogaClass);
+    }
+
+    void displayClasses() {
+        for (YogaClass yogaClass : classes) {
+            std::cout << yogaClass.name << " with " << yogaClass.instructor << " at " << yogaClass.time << std::endl;
+        }
+    }
+
+    YogaClass* findClassByName(std::string name) {
+        for (YogaClass& yogaClass : classes) {
+            if (yogaClass.name == name) {
+                return &yogaClass;
             }
         }
-        file.close();
+        return nullptr;
+    }
+};
+int main() {
+    YogaSchedule schedule;
+
+    // Add yoga classes to the schedule
+    YogaClass hatha("Hatha Yoga", "John Doe", "Monday 10:00", 10);
+    YogaClass vinyasa("Vinyasa Yoga", "Jane Doe", "Tuesday 18:00", 15);
+    YogaClass ashtanga("Ashtanga Yoga", "Mike Smith", "Wednesday 14:00", 8);
+    schedule.addClass(hatha);
+    schedule.addClass(vinyasa);
+    schedule.addClass(ashtanga);
+
+    // Display the schedule
+    std::cout << "Yoga classes schedule:" << std::endl;
+    schedule.displayClasses();
+
+    // Prompt the user to enroll in a yoga class
+    std::string className;
+    std::cout << "Enter the name of the yoga class you want to enroll in: ";
+    std::cin >> className;
+
+    // Find the yoga class by name and enroll in it
+    YogaClass* yogaClass = schedule.findClassByName(className);
+    if (yogaClass == nullptr) {
+        std::cout << "Sorry, we couldn't find a yoga class with that name." << std::endl;
     }
     else {
-        std::cout << "Unable to open file\n";
-        return 1;
-    }
-
-    int choice = 0;
-    while (choice != 3) {
-        std::cout << "Select an option:\n";
-        std::cout << "1. View Fitness Class Schedule\n";
-        std::cout << "2. Sign up for a Fitness Class\n";
-        std::cout << "3. Exit\n";
-
-        std::cin >> choice;
-
-        switch (choice) {
-        case 1:
-            printSchedule(schedule);
-            break;
-        case 
-                signUp("yoga", day);
-            }
-            else if (class_choice == 2) {
-                std::cout << "Available zumba classes:\n";
-                for (const auto& day : schedule["zumba"]) {
-                    std::cout << "  " << day << '\n';
-                }
-                std::cout << "Enter the day you would like to sign up for (e.g. 'Monday'):\n";
-                std::string day;
-                std::cin >> day;
-                signUp("zumba", day);
-            }
-            else {
-                std::cout << "Invalid choice. Please enter 1 or 2.\n";
-            }
-            break;
-        }
-        case 3:
-            std::cout << "Exiting...\n";
-            break;
-        default:
-            std::cout << "Invalid choice. Please enter a number between 1 and 3.\n";
-            break;
-        }
+        yogaClass->enroll();
     }
 
     return 0;

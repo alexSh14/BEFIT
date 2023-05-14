@@ -4,8 +4,9 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <sstream>
 
-class YogaClass {
+class FitnessClass {
 public:
     std::string name;
     std::string instructor;
@@ -13,7 +14,7 @@ public:
     int capacity;
     int enrolled;
 
-    YogaClass(std::string name, std::string instructor, std::string time, int capacity) {
+    FitnessClass(std::string name, std::string instructor, std::string time, int capacity) {
         this->name = name;
         this->instructor = instructor;
         this->time = time;
@@ -35,57 +36,88 @@ public:
         }
     }
 };
-class YogaSchedule {
-public:
-    std::vector<YogaClass> classes;
 
-    void addClass(YogaClass yogaClass) {
-        classes.push_back(yogaClass);
+class FitnessSchedule {
+public:
+    std::vector<FitnessClass> classes;
+
+    void addClass(FitnessClass fitnessClass) {
+        classes.push_back(fitnessClass);
     }
 
     void displayClasses() {
-        for (YogaClass yogaClass : classes) {
-            std::cout << yogaClass.name << " with " << yogaClass.instructor << " at " << yogaClass.time << std::endl;
+        std::cout << "Fitness classes schedule:" << std::endl;
+        for (FitnessClass fitnessClass : classes) {
+            std::cout << fitnessClass.name << " with " << fitnessClass.instructor << " at " << fitnessClass.time << std::endl;
         }
     }
 
-    YogaClass* findClassByName(std::string name) {
-        for (YogaClass& yogaClass : classes) {
-            if (yogaClass.name == name) {
-                return &yogaClass;
+    FitnessClass* findClassByName(std::string name) {
+        for (FitnessClass& fitnessClass : classes) {
+            if (fitnessClass.name == name) {
+                return &fitnessClass;
             }
         }
         return nullptr;
     }
-};
-int main() {
-    YogaSchedule schedule;
 
-    // Add yoga classes to the schedule
-    YogaClass hatha("Hatha Yoga", "John Doe", "Monday 10:00", 10);
-    YogaClass vinyasa("Vinyasa Yoga", "Jane Doe", "Tuesday 18:00", 15);
-    YogaClass ashtanga("Ashtanga Yoga", "Mike Smith", "Wednesday 14:00", 8);
-    schedule.addClass(hatha);
-    schedule.addClass(vinyasa);
-    schedule.addClass(ashtanga);
+    void loadScheduleFromFile(std::string filename) {
+        std::ifstream file(filename);
+        if (file.is_open()) {
+            std::string line;
+            while (getline(file, line)) {
+                std::string name, instructor, time;
+                int capacity;
+                std::istringstream iss(line);
+                if (!(iss >> name >> instructor >> time >> capacity)) {
+                    continue;
+                }
+                addClass(FitnessClass(name, instructor, time, capacity));
+            }
+            file.close();
+        }
+        else {
+            std::cout << "Unable to open file " << filename << std::endl;
+        }
+    }
+
+    void enrollClient(std::string className, std::string clientName, std::string clientEmail) {
+        FitnessClass* fitnessClass = findClassByName(className);
+        if (fitnessClass == nullptr) {
+            std::cout << "Sorry, we couldn't find a fitness class with that name." << std::endl;
+        }
+        else {
+            fitnessClass->enroll();
+            std::ofstream outfile;
+            outfile.open(className + ".txt", std::ios_base::app);
+            outfile << clientName << " " << clientEmail << std::endl;
+            outfile.close();
+        }
+    }
+};
+
+int main() {
+    FitnessSchedule schedule;
+
+    // Load fitness classes from file
+    schedule.loadScheduleFromFile("fitness_classes.txt");
 
     // Display the schedule
-    std::cout << "Yoga classes schedule:" << std::endl;
     schedule.displayClasses();
 
-    // Prompt the user to enroll in a yoga class
+    // Prompt the user to enroll in a fitness class
     std::string className;
-    std::cout << "Enter the name of the yoga class you want to enroll in: ";
+    std::string clientName;
+    std::string clientEmail;
+    std::cout << "Enter the name of the fitness class you want to enroll in: ";
     std::cin >> className;
+    std::cout << "Enter your name: ";
+    std::cin >> clientName;
+    std::cout << "Enter your email address: ";
+    std::cin >> clientEmail;
 
-    // Find the yoga class by name and enroll in it
-    YogaClass* yogaClass = schedule.findClassByName(className);
-    if (yogaClass == nullptr) {
-        std::cout << "Sorry, we couldn't find a yoga class with that name." << std::endl;
-    }
-    else {
-        yogaClass->enroll();
-    }
+    // Enroll the client in the fitness class
+    schedule.enrollClient(className, clientName, clientEmail);
 
     return 0;
 }

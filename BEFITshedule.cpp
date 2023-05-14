@@ -72,20 +72,7 @@ int main() {
         case 1:
             printSchedule(schedule);
             break;
-        case 2: {
-            std::cout << "Enter the number of the Fitness Class you would like to sign up for:\n";
-            std::cout << "1. yoga\n";
-            std::cout << "2. zumba\n";
-            int class_choice;
-            std::cin >> class_choice;
-            if (class_choice == 1) {
-                std::cout << "Available yoga classes:\n";
-                for (const auto& day : schedule["yoga"]) {
-                    std::cout << "  " << day << '\n';
-                }
-                std::cout << "Enter the day you would like to sign up for (e.g. 'Monday'):\n";
-                std::string day;
-                std::cin >> day;
+        case 
                 signUp("yoga", day);
             }
             else if (class_choice == 2) {

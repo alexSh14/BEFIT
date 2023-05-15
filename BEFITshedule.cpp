@@ -2,21 +2,49 @@
 //
 
 #include "Header.h"
+#include <fstream>
+#include <sstream>
+
 int main() {
     setlocale(LC_ALL, "Rus");
-    // Загрузка расписания тренировок по йоге
-    std::vector<YogaTraining> yoga_schedule = {
-        { {1, 6, 2023}, {9, 0}, {"Йога-центр", "ул. Пушкина, 10"} },
-        { {3, 6, 2023}, {15, 0}, {"Студия йоги", "ул. Лермонтова, 5"} },
-        { {5, 6, 2023}, {11, 0}, {"Фитнес-клуб", "ул. Гоголя, 20"} }
-    };
+    std::ifstream input_file("schedule.txt");
+    if (!input_file) {
+        std::cerr << "Ошибка открытия файла" << std::endl;
+        return 1;
+    }
 
-    // Загрузка расписания тренировок по зумбе
-    std::vector<ZumbaTraining> zumba_schedule = {
-        { {2, 6, 2023}, {10, 0}, {"Танцевальный зал", "ул. Толстого, 15"} },
-        { {4, 6, 2023}, {16, 0}, {"Студия танцев", "ул. Пушкина, 5"} },
-        { {6, 6, 2023}, {12, 0}, {"Фитнес-центр", "ул. Чехова, 12"} }
-    };
+    std::vector<YogaTraining> yoga_schedule;
+    std::vector<ZumbaTraining> zumba_schedule;
+
+    std::string line;
+    std::string category;
+
+    while (std::getline(input_file, line)) {
+        std::istringstream iss(line);
+
+        if (line == "YOGA") {
+            category = "YOGA";
+            continue;
+        }
+        else if (line == "ZUMBA") {
+            category = "ZUMBA";
+            continue;
+        }
+
+        Date date;
+        Time time;
+        Place place;
+
+        char delimiter;
+        iss >> date.day >> delimiter >> date.month >> delimiter >> date.year >> time.hour >> delimiter >> time.minute >> place.name >> place.address;
+
+        if (category == "YOGA") {
+            yoga_schedule.push_back({ date, time, place });
+        }
+        else if (category == "ZUMBA") {
+            zumba_schedule.push_back({ date, time, place });
+        }
+    }
 
     // Вывод расписания тренировок по йоге
     std::cout << "Расписание тренировок по йоге:" << std::endl;

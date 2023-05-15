@@ -1,123 +1,41 @@
 ﻿// BEFITshedule.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 //
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <sstream>
 
-class FitnessClass {
-public:
-    std::string name;
-    std::string instructor;
-    std::string time;
-    int capacity;
-    int enrolled;
-
-    FitnessClass(std::string name, std::string instructor, std::string time, int capacity) {
-        this->name = name;
-        this->instructor = instructor;
-        this->time = time;
-        this->capacity = capacity;
-        this->enrolled = 0;
-    }
-
-    bool isFull() {
-        return enrolled >= capacity;
-    }
-
-    void enroll() {
-        if (!isFull()) {
-            enrolled++;
-            std::cout << "You have successfully enrolled in " << name << std::endl;
-        }
-        else {
-            std::cout << "Sorry, " << name << " is already full." << std::endl;
-        }
-    }
-};
-
-class FitnessSchedule {
-public:
-    std::vector<FitnessClass> classes;
-
-    void addClass(FitnessClass fitnessClass) {
-        classes.push_back(fitnessClass);
-    }
-
-    void displayClasses() {
-        std::cout << "Fitness classes schedule:" << std::endl;
-        for (FitnessClass fitnessClass : classes) {
-            std::cout << fitnessClass.name << " with " << fitnessClass.instructor << " at " << fitnessClass.time << std::endl;
-        }
-    }
-
-    FitnessClass* findClassByName(std::string name) {
-        for (FitnessClass& fitnessClass : classes) {
-            if (fitnessClass.name == name) {
-                return &fitnessClass;
-            }
-        }
-        return nullptr;
-    }
-
-    void loadScheduleFromFile(std::string filename) {
-        std::ifstream file(filename);
-        if (file.is_open()) {
-            std::string line;
-            while (getline(file, line)) {
-                std::string name, instructor, time;
-                int capacity;
-                std::istringstream iss(line);
-                if (!(iss >> name >> instructor >> time >> capacity)) {
-                    continue;
-                }
-                addClass(FitnessClass(name, instructor, time, capacity));
-            }
-            file.close();
-        }
-        else {
-            std::cout << "Unable to open file " << filename << std::endl;
-        }
-    }
-
-    void enrollClient(std::string className, std::string clientName, std::string clientEmail) {
-        FitnessClass* fitnessClass = findClassByName(className);
-        if (fitnessClass == nullptr) {
-            std::cout << "Sorry, we couldn't find a fitness class with that name." << std::endl;
-        }
-        else {
-            fitnessClass->enroll();
-            std::ofstream outfile;
-            outfile.open(className + ".txt", std::ios_base::app);
-            outfile << clientName << " " << clientEmail << std::endl;
-            outfile.close();
-        }
-    }
-};
-
+#include "Header.h"
 int main() {
-    FitnessSchedule schedule;
+    setlocale(LC_ALL, "Rus");
+    // Загрузка расписания тренировок по йоге
+    std::vector<YogaTraining> yoga_schedule = {
+        { {1, 6, 2023}, {9, 0}, {"Йога-центр", "ул. Пушкина, 10"} },
+        { {3, 6, 2023}, {15, 0}, {"Студия йоги", "ул. Лермонтова, 5"} },
+        { {5, 6, 2023}, {11, 0}, {"Фитнес-клуб", "ул. Гоголя, 20"} }
+    };
 
-    // Load fitness classes from file
-    schedule.loadScheduleFromFile("fitness_classes.txt");
+    // Загрузка расписания тренировок по зумбе
+    std::vector<ZumbaTraining> zumba_schedule = {
+        { {2, 6, 2023}, {10, 0}, {"Танцевальный зал", "ул. Толстого, 15"} },
+        { {4, 6, 2023}, {16, 0}, {"Студия танцев", "ул. Пушкина, 5"} },
+        { {6, 6, 2023}, {12, 0}, {"Фитнес-центр", "ул. Чехова, 12"} }
+    };
 
-    // Display the schedule
-    schedule.displayClasses();
+    // Вывод расписания тренировок по йоге
+    std::cout << "Расписание тренировок по йоге:" << std::endl;
+    for (const auto& training : yoga_schedule) {
+        std::cout << "Дата: " << training.date.day << "." << training.date.month << "." << training.date.year << std::endl;
+        std::cout << "Время: " << training.time.hour << ":" << training.time.minute << std::endl;
+        std::cout << "Место: " << training.place.name << ", " << training.place.address << std::endl;
+        std::cout << std::endl;
+    }
 
-    // Prompt the user to enroll in a fitness class
-    std::string className;
-    std::string clientName;
-    std::string clientEmail;
-    std::cout << "Enter the name of the fitness class you want to enroll in: ";
-    std::cin >> className;
-    std::cout << "Enter your name: ";
-    std::cin >> clientName;
-    std::cout << "Enter your email address: ";
-    std::cin >> clientEmail;
-
-    // Enroll the client in the fitness class
-    schedule.enrollClient(className, clientName, clientEmail);
+    // Вывод расписания тренировок по зумбе
+    std::cout << "Расписание тренировок по зумбе:" << std::endl;
+    for (const auto& training : zumba_schedule) {
+        std::cout << "Дата: " << training.date.day << "." << training.date.month << "." << training.date.year << std::endl;
+        std::cout << "Время: " << training.time.hour << ":" << training.time.minute << std::endl;
+        std::cout << "Место: " << training.place.name << ", " << training.place.address << std::endl;
+        std::cout << std::endl;
+    }
 
     return 0;
 }
+

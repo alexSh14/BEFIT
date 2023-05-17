@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 
 struct Client {
     std::string first_name;
@@ -21,6 +22,13 @@ public:
     void Print() const {
         std::cout << "Yoga class on " << date_ << " at " << time_ << std::endl;
         std::cout << "Client: " << client_.first_name << " " << client_.last_name << ", phone number: " << client_.phone_number << std::endl;
+    }
+
+    void SaveClientToFile(const std::string& filename) const {
+        std::ofstream outfile;
+        outfile.open(filename);
+        outfile << client_.first_name << " " << client_.last_name << " " << client_.phone_number << std::endl;
+        outfile.close();
     }
 
 private:
@@ -42,6 +50,10 @@ int main() {
     yoga_class.SetClient(client);
 
     yoga_class.Print();
+
+    std::string filename = "client.txt";
+    yoga_class.SaveClientToFile(filename);
+    std::cout << "Client saved to file: " << filename << std::endl;
 
     return 0;
 }

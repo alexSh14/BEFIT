@@ -23,11 +23,16 @@ public:
         std::cout << "Yoga class on " << date_ << " at " << time_ << std::endl;
         std::cout << "Client: " << client_.first_name << " " << client_.last_name << ", phone number: " << client_.phone_number << std::endl;
     }
-
-    void SaveClientToFile(const std::string& filename) const {
-        std::ofstream outfile;
-        outfile.open(filename);
+    void SaveClientToFile(const std::string& fileclient) const {
+        std::fstream outfile;
+        outfile.open(fileclient, std::ios::out | std::ios::app);
         outfile << client_.first_name << " " << client_.last_name << " " << client_.phone_number << std::endl;
+        outfile.close();
+    }
+    void SaveToFile(const std::string& filename) const {
+        std::fstream outfile;
+        outfile.open(filename, std::ios::out | std::ios::app);
+        outfile << date_ << " " << time_ << " " << client_.first_name << " " << client_.last_name << " " << client_.phone_number << std::endl;
         outfile.close();
     }
 
@@ -54,13 +59,16 @@ int main() {
     std::cin >> client.last_name;
     std::cout << "Enter phone number: ";
     std::cin >> client.phone_number;
+
     yoga_class.SetClient(client);
 
     yoga_class.Print();
-
-    std::string filename = "client.txt";
-    yoga_class.SaveClientToFile(filename);
-    std::cout << "Client saved to file: " << filename << std::endl;
+    std::string fileclient = "client.txt";
+    yoga_class.SaveClientToFile(fileclient);
+    std::cout << "Client saved to file: " << fileclient << std::endl;
+    std::string filename = "yoga_classes.txt";
+    yoga_class.SaveToFile(filename);
+    std::cout << "Yoga class saved to file: " << filename << std::endl;
 
     return 0;
 }

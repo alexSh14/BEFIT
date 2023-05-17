@@ -42,7 +42,19 @@ private:
     Client client_;
 };
 
+void PrintFileContents(const std::string& filename) {
+    std::ifstream infile(filename);
+    std::string line;
+    while (std::getline(infile, line)) {
+        std::cout << line << std::endl;
+    }
+    infile.close();
+}
+
 int main() {
+    std::string filename = "yoga_classes.txt";
+    PrintFileContents(filename);
+    
     std::string date;
     std::string time;
     std::cout << "Enter date (YYYY-MM-DD): ";
@@ -66,7 +78,6 @@ int main() {
     std::string fileclient = "client.txt";
     yoga_class.SaveClientToFile(fileclient);
     std::cout << "Client saved to file: " << fileclient << std::endl;
-    std::string filename = "yoga_classes.txt";
     yoga_class.SaveToFile(filename);
     std::cout << "Yoga class saved to file: " << filename << std::endl;
 

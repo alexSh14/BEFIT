@@ -3,11 +3,13 @@
 
 #include <string>
 #include <iostream>
+
 struct Client {
     std::string first_name;
     std::string last_name;
     std::string phone_number;
 };
+
 class YogaClass {
 public:
     YogaClass(const std::string& date, const std::string& time) : date_(date), time_(time) {}
@@ -31,10 +33,12 @@ int main() {
     YogaClass yoga_class("2023-05-17", "10:00");
 
     Client client;
-    client.first_name = "John";
-    client.last_name = "Doe";
-    client.phone_number = "+123456789";
-
+    std::cout << "Enter first name: ";
+    std::cin >> client.first_name;
+    std::cout << "Enter last name: ";
+    std::cin >> client.last_name;
+    std::cout << "Enter phone number: ";
+    std::cin >> client.phone_number;
     yoga_class.SetClient(client);
 
     yoga_class.Print();

@@ -1,22 +1,43 @@
 ﻿// BEFITshedule.cpp : Этот файл содержит функцию "main". Здесь начинается и заканчивается выполнение программы.
 //
 
-#include "Header.h"
-#include "FunctionSchedule.h"
-#include <fstream>
-#include <sstream>
+#include <string>
+#include <iostream>
+struct Client {
+    std::string first_name;
+    std::string last_name;
+    std::string phone_number;
+};
+class YogaClass {
+public:
+    YogaClass(const std::string& date, const std::string& time) : date_(date), time_(time) {}
 
-int main() {
-    setlocale(LC_ALL, "Rus");
-
-    std::vector<YogaTraining> yoga_schedule;
-    std::vector<ZumbaTraining> zumba_schedule;
-
-    if (!readScheduleFromFile("schedule.txt", yoga_schedule, zumba_schedule)) {
-        return 1;
+    void SetClient(const Client& client) {
+        client_ = client;
     }
 
-    printSchedule(yoga_schedule, zumba_schedule);
+    void Print() const {
+        std::cout << "Yoga class on " << date_ << " at " << time_ << std::endl;
+        std::cout << "Client: " << client_.first_name << " " << client_.last_name << ", phone number: " << client_.phone_number << std::endl;
+    }
+
+private:
+    std::string date_;
+    std::string time_;
+    Client client_;
+};
+
+int main() {
+    YogaClass yoga_class("2023-05-17", "10:00");
+
+    Client client;
+    client.first_name = "John";
+    client.last_name = "Doe";
+    client.phone_number = "+123456789";
+
+    yoga_class.SetClient(client);
+
+    yoga_class.Print();
 
     return 0;
 }

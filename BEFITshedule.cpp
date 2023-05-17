@@ -38,7 +38,14 @@ private:
 };
 
 int main() {
-    YogaClass yoga_class("2023-05-17", "10:00");
+    std::string date;
+    std::string time;
+    std::cout << "Enter date (YYYY-MM-DD): ";
+    std::cin >> date;
+    std::cout << "Enter time (HH:MM): ";
+    std::cin >> time;
+
+    YogaClass yoga_class(date, time);
 
     Client client;
     std::cout << "Enter first name: ";

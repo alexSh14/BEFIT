@@ -2,138 +2,163 @@
 //
 
 #include <string>
+#include <vector>
+#include <map>
 #include <iostream>
-#include <fstream>
 
-struct Client {
-    std::string first_name;
-    std::string last_name;
-    std::string phone_number;
-};
-
-class YogaClass {
+class Client {
 public:
-    YogaClass(const std::string& date, const std::string& time) : date_(date), time_(time) {}
+    Client(std::string name, std::string phone, std::string email, std::string birthday,
+        std::string start_date, std::string end_date)
+        : name_(name), phone_(phone), email_(email), birthday_(birthday),
+        start_date_(start_date), end_date_(end_date) {}
 
-    void SetClient(const Client& client) {
-        client_ = client;
-    }
-
-    void Print() const {
-        std::cout << "Yoga class on " << date_ << " at " << time_ << std::endl;
-        std::cout << "Client: " << client_.first_name << " " << client_.last_name << ", phone number: " << client_.phone_number << std::endl;
-    }
-    void SaveClientToFile(const std::string& fileclient) const {
-        std::fstream outfile;
-        outfile.open(fileclient, std::ios::out | std::ios::app);
-        outfile << client_.first_name << " " << client_.last_name << " " << client_.phone_number << std::endl;
-        outfile.close();
-    }
-    void SaveToFile(const std::string& filename) const {
-        std::fstream outfile;
-        outfile.open(filename, std::ios::out | std::ios::app);
-        outfile << date_ << " " << time_ << " " << client_.first_name << " " << client_.last_name << " " << client_.phone_number << std::endl;
-        outfile.close();
-    }
+    std::string name() const { return name_; }
+    std::string phone() const { return phone_; }
+    std::string email() const { return email_; }
+    std::string birthday() const { return birthday_; }
+    std::string start_date() const { return start_date_; }
+    std::string end_date() const { return end_date_; }
 
 private:
-    std::string date_;
-    std::string time_;
-    Client client_;
+    std::string name_;
+    std::string phone_;
+    std::string email_;
+    std::string birthday_;
+    std::string start_date_;
+    std::string end_date_;
 };
 
-void PrintFileContents(const std::string& filename) {
-    std::ifstream infile(filename);
-    std::string line;
-    while (std::getline(infile, line)) {
-        std::cout << line << std::endl;
+class FitnessJournal {
+public:
+    void AddClient(Client client) { clients_.push_back(client); }
+    void RemoveClient(std::string name);
+    void AddTrainingRecord(std::string name, std::string date, std::string workout,
+        std::string trainer);
+    void RemoveTrainingRecord(std::string name, std::string date);
+    std::vector<Client> FindClient(std::string name) const;
+    std::vector<Client> FindClientByPhone(std::string phone) const;
+    std::vector<Client> GetAllClients() const { return clients_; }
+    std::vector<std::string> GetTrainingRecords(std::string name) const;
+
+private:
+    std::vector<Client> clients_;
+    std::map<std::string, std::vector<std::string>> training_records_;
+};
+
+void FitnessJournal::RemoveClient(std::string name) {
+    for (auto it = clients_.begin(); it != clients_.end(); ++it) {
+        if (it->name() == name) {
+            clients_.erase(it);
+            break;
+        }
     }
-    infile.close();
 }
 
+void FitnessJournal::AddTrainingRecord(std::string name, std::string date, std::string workout,
+    std::string trainer) {
+    training_records_[name].push_back(date + " " + workout + " " + trainer);
+}
+
+void FitnessJournal::RemoveTrainingRecord(std::string name, std::string date) {
+    auto& records = training_records_[name];
+    for (auto it = records.begin(); it != records.end(); ++it) {
+        if (it->find(date) == 0) {
+            records.erase(it);
+            break;
+        }
+    }
+}
+
+std::vector<Client> FitnessJournal::FindClient(std::string name) const {
+    std::vector<Client> result;
+    for (const auto& client : clients_) {
+        if (client.name() == name) {
+            result.push_back(client);
+        }
+    }
+    return result;
+}
+
+std::vector<Client> FitnessJournal::FindClientByPhone(std::string phone) const {
+    std::vector<Client> result;
+    for (const auto& client : clients_) {
+        if (client.phone() == phone) {
+            result.push_back(client);
+        }
+    }
+    return result;
+}
+
+std::vector<std::string> FitnessJournal::GetTrainingRecords(std::string name) const {
+    auto it = training_records_.find(name);
+    if (it == training_records_.end()) {
+        return {};
+    }
+    return it->second;
+}
+
+
 int main() {
-    std::string filename = "yoga_classes.txt";
-    std::string date;
-    std::string time;
-    int options;
+    FitnessJournal journal;
 
-    Client client;
-    std::string fileclient = "client.txt";
+    // Add some clients
+    Client client1("John Smith", "555-1234", "jsmith@example.com", "01/01/1980", "05/01/2023", "05/31/2023");
+    Client client2("Jane Doe", "555-5678", "jdoe@example.com", "02/02/1985", "05/01/2023", "05/31/2023");
+    journal.AddClient(client1);
+    journal.AddClient(client2);
 
-    YogaClass yoga_class("", ""); // объявляем переменную здесь
-
-    std::cout << "Enter option number: ";
-    std::cout << "1. Print schedule information" << std::endl;
-    std::cout << "2. Save client information to file" << std::endl;
-    std::cout << "3. Save class information to file" << std::endl;
-    std::cout << "4. Exit" << std::endl;
-    std::cin >> options;
-
-    switch (options) {
-    case 1:
-        std::cout << "Show schedule:" << std::endl;
-        PrintFileContents(filename);
-        break;
-    case 2:
-        std::cout << "Enter date (YYYY-MM-DD): ";
-        std::cin >> date;
-        std::cout << "Enter time (HH:MM): ";
-        std::cin >> time;
-        yoga_class = YogaClass(date, time); // инициализируем объект YogaClass с заданными значениями date и time
-
-        std::cout << "Enter first name: ";
-        std::cin >> client.first_name;
-        std::cout << "Enter last name: ";
-        std::cin >> client.last_name;
-        std::cout << "Enter phone number: ";
-        std::cin >> client.phone_number;
-
-        yoga_class.SetClient(client);
-
-        yoga_class.Print();
-        yoga_class.SaveToFile(filename);
-        std::cout << "Yoga class saved to file: " << filename << std::endl;
-        yoga_class.SaveClientToFile(fileclient);
-        std::cout << "Client saved to file: " << fileclient << std::endl;
-        break;
-    case 3:
-        std::cout << "Wednesday" << std::endl;
-        break;
-    case 4:
-        std::cout << "Thursday" << std::endl;
-        break;
-    case 5:
-        std::cout << "Friday" << std::endl;
-        break;
-    case 6:
-        std::cout << "Saturday" << std::endl;
-        break;
-    case 7:
-        std::cout << "Sunday" << std::endl;
-        break;
-    default:
-        std::cout << "Invalid day number" << std::endl;
-        break;
+    // Get all clients
+    std::vector<Client> clients = journal.GetAllClients();
+    for (const auto& client : clients) {
+        std::cout << "Client name: " << client.name() << ", phone number: " << client.phone() << std::endl;
     }
 
+    // Find a client by name
+    std::string name = "John Smith";
+    std::vector<Client> found_clients = journal.FindClient(name);
+    if (!found_clients.empty()) {
+        std::cout << "Found " << found_clients.size() << " clients with name " << name << std::endl;
+        for (const auto& client : found_clients) {
+            std::cout << "Client name: " << client.name() << ", phone number: " << client.phone() << std::endl;
+        }
+    }
+    else {
+        std::cout << "No clients found with name " << name << std::endl;
+    }
 
+    // Find a client by phone number
+    std::string phone = "555-5678";
+    found_clients = journal.FindClientByPhone(phone);
+    if (!found_clients.empty()) {
+        std::cout << "Found " << found_clients.size() << " clients with phone number " << phone << std::endl;
+        for (const auto& client : found_clients) {
+            std::cout << "Client name: " << client.name() << ", phone number: " << client.phone() << std::endl;
+        }
+    }
+    else {
+        std::cout << "No clients found with phone number " << phone << std::endl;
+    }
 
+    // Add training record for a client
+    std::string client_name = "John Smith";
+    std::string date = "05/18/2023";
+    std::string workout = "Cardio";
+    std::string trainer = "Trainer A";
+    journal.AddTrainingRecord(client_name, date, workout, trainer);
 
+    // Get training records for a client
+    std::vector<std::string> records = journal.GetTrainingRecords(client_name);
+    std::cout << "Training records for client " << client_name << ":" << std::endl;
+    for (const auto& record : records) {
+        std::cout << "  " << record << std::endl;
+    }
 
+    // Remove a training record for a client
+    journal.RemoveTrainingRecord(client_name, date);
 
-
-
-    
-    
-    
-    
-
-    
-
-   
-    
+    // Remove a client
+    journal.RemoveClient(client_name);
 
     return 0;
 }
-
-

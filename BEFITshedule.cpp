@@ -102,63 +102,139 @@ std::vector<std::string> FitnessJournal::GetTrainingRecords(std::string name) co
 int main() {
     FitnessJournal journal;
 
-    // Add some clients
-    Client client1("John Smith", "555-1234", "jsmith@example.com", "01/01/1980", "05/01/2023", "05/31/2023");
-    Client client2("Jane Doe", "555-5678", "jdoe@example.com", "02/02/1985", "05/01/2023", "05/31/2023");
-    journal.AddClient(client1);
-    journal.AddClient(client2);
+    int choice;
+    do {
+        std::cout << "Choose an option:" << std::endl;
+        std::cout << "1. Add client" << std::endl;
+        std::cout << "2. Remove client" << std::endl;
+        std::cout << "3. Find client by name" << std::endl;
+        std::cout << "4. Find client by phone number" << std::endl;
+        std::cout << "5. Add training record for a client" << std::endl;
+        std::cout << "6. Get training records for a client" << std::endl;
+        std::cout << "7. Remove training record for a client" << std::endl;
+        std::cout << "8. Get all clients" << std::endl;
+        std::cout << "9. Quit" << std::endl;
 
-    // Get all clients
-    std::vector<Client> clients = journal.GetAllClients();
-    for (const auto& client : clients) {
-        std::cout << "Client name: " << client.name() << ", phone number: " << client.phone() << std::endl;
-    }
+        std::cin >> choice;
 
-    // Find a client by name
-    std::string name = "John Smith";
-    std::vector<Client> found_clients = journal.FindClient(name);
-    if (!found_clients.empty()) {
-        std::cout << "Found " << found_clients.size() << " clients with name " << name << std::endl;
-        for (const auto& client : found_clients) {
-            std::cout << "Client name: " << client.name() << ", phone number: " << client.phone() << std::endl;
+        switch (choice) {
+        case 1: {
+            std::string name, phone, email, birthday, start_date, end_date;
+            std::cout << "Enter client name: ";
+            std::cin >> name;
+            std::cout << "Enter client phone number: ";
+            std::cin >> phone;
+            std::cout << "Enter client email: ";
+            std::cin >> email;
+            std::cout << "Enter client birthday: ";
+            std::cin >> birthday;
+            std::cout << "Enter client start date: ";
+            std::cin >> start_date;
+            std::cout << "Enter client end date: ";
+            std::cin >> end_date;
+
+            Client client(name, phone, email, birthday, start_date, end_date);
+            journal.AddClient(client);
+            break;
         }
-    }
-    else {
-        std::cout << "No clients found with name " << name << std::endl;
-    }
 
-    // Find a client by phone number
-    std::string phone = "555-5678";
-    found_clients = journal.FindClientByPhone(phone);
-    if (!found_clients.empty()) {
-        std::cout << "Found " << found_clients.size() << " clients with phone number " << phone << std::endl;
-        for (const auto& client : found_clients) {
-            std::cout << "Client name: " << client.name() << ", phone number: " << client.phone() << std::endl;
+        case 2: {
+            std::string name;
+            std::cout << "Enter client name: ";
+            std::cin >> name;
+            journal.RemoveClient(name);
+            break;
         }
-    }
-    else {
-        std::cout << "No clients found with phone number " << phone << std::endl;
-    }
 
-    // Add training record for a client
-    std::string client_name = "John Smith";
-    std::string date = "05/18/2023";
-    std::string workout = "Cardio";
-    std::string trainer = "Trainer A";
-    journal.AddTrainingRecord(client_name, date, workout, trainer);
+        case 3: {
+            std::string name;
+            std::cout << "Enter client name: ";
+            std::cin >> name;
+            std::vector<Client> found_clients = journal.FindClient(name);
+            if (!found_clients.empty()) {
+                std::cout << "Found " << found_clients.size() << " clients with name " << name << std::endl;
+                for (const auto& client : found_clients) {
+                    std::cout << "Client name: " << client.name() << ", phone number: " << client.phone() << std::endl;
+                }
+            }
+            else {
+                std::cout << "No clients found with name " << name << std::endl;
+            }
+            break;
+        }
 
-    // Get training records for a client
-    std::vector<std::string> records = journal.GetTrainingRecords(client_name);
-    std::cout << "Training records for client " << client_name << ":" << std::endl;
-    for (const auto& record : records) {
-        std::cout << "  " << record << std::endl;
-    }
+        case 4: {
+            std::string phone;
+            std::cout << "Enter client phone number: ";
+            std::cin >> phone;
+            std::vector<Client> found_clients = journal.FindClientByPhone(phone);
+            if (!found_clients.empty()) {
+                std::cout << "Found " << found_clients.size() << " clients with phone number " << phone << std::endl;
+                for (const auto& client : found_clients) {
+                    std::cout << "Client name: " << client.name() << ", phone number: " << client.phone() << std::endl;
+                }
+            }
+            else {
+                std::cout << "No clients found with phone number " << phone << std::endl;
+            }
+            break;
+        }
 
-    // Remove a training record for a client
-    journal.RemoveTrainingRecord(client_name, date);
+        case 5: {
+            std::string client_name, date, workout, trainer;
+            std::cout << "Enter client name: ";
+            std::cin >> client_name;
+            std::cout << "Enter date: ";
+            std::cin >> date;
+            std::cout << "Enter workout: ";
+            std::cin >> workout;
+            std::cout << "Enter trainer: ";
+            std::cin >> trainer;
 
-    // Remove a client
-    journal.RemoveClient(client_name);
+            journal.AddTrainingRecord(client_name, date, workout, trainer);
+            break;
+        }
+
+        case 6: {
+            std::string client_name;
+            std::cout << "Enter client name: ";
+            std::cin >> client_name;
+
+            std::vector<std::string> records = journal.GetTrainingRecords(client_name);
+            std::cout << "Training records for client " << client_name << ":" << std::endl;
+            for (const auto& record : records) {
+                std::cout << "  " << record << std::endl;
+            }
+            break;
+        }
+
+        case 7: {
+            std::string client_name, date;
+            std::cout << "Enter client name: ";
+            std::cin >> client_name;
+            std::cout << "Enter date: ";
+            std::cin >> date;
+
+            journal.RemoveTrainingRecord(client_name, date);
+            break;
+        }
+
+        case 8: {
+            std::vector<Client> clients = journal.GetAllClients();
+            for (const auto& client : clients) {
+                std::cout << "Client name: " << client.name() << ", phone number: " << client.phone() << std::endl;
+            }
+            break;
+        }
+
+        case 9:
+            break;
+
+        default:
+            std::cout << "Invalid choice, please try again." << std::endl;
+            break;
+        }
+    } while (choice != 9);
 
     return 0;
 }

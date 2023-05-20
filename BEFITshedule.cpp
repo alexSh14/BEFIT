@@ -4,7 +4,7 @@
 
 
 using namespace std;
-
+//создадим класс "Клиент":
 class Client {
 public:
     string full_name;
@@ -13,6 +13,7 @@ public:
     string subscription_start_date;
     string subscription_end_date;
 };
+//создадим класс "Запись на тренировку":
 class WorkoutRecord {
 public:
     string workout_date;
@@ -21,6 +22,7 @@ public:
     string trainer_name;
     string client_full_name;
 };
+//создадим класс "Журнал учета клиентов":
 class ClientJournal {
 public:
     // Добавление нового клиента в журнал
@@ -39,13 +41,13 @@ public:
     Client find_client(const string& search_param);
 
     // Получение списка всех клиентов в журнале
-    std::vector<Client> get_all_clients();
+    vector<Client> get_all_clients();
 
     // Получение списка всех записей на тренировки для конкретного клиента
-    std::vector<WorkoutRecord> get_workout_records(const string& full_name);
+    vector<WorkoutRecord> get_workout_records(const string& full_name);
 
     // Получение списка всех записей на тренировки за определенный период времени
-    std::vector<WorkoutRecord> get_workout_records_by_period(const string& start_date, const string& end_date);
+    vector<WorkoutRecord> get_workout_records_by_period(const string& start_date, const string& end_date);
 
 private:
     vector<Client> clients_;
@@ -54,6 +56,8 @@ private:
     // Вспомогательная функция для поиска клиента
     bool matches_search_param(const Client& client, const string& search_param);
 };
+//методы класса "Журнал учета клиентов":
+
 void ClientJournal::add_client(const Client& client) {
     clients_.push_back(client);
 }

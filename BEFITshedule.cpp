@@ -4,7 +4,7 @@
 
 
 using namespace std;
-//создадим класс "Клиент":
+
 class Client {
 public:
     string full_name;
@@ -13,7 +13,6 @@ public:
     string subscription_start_date;
     string subscription_end_date;
 };
-//создадим класс "Запись на тренировку":
 class WorkoutRecord {
 public:
     string workout_date;
@@ -22,7 +21,6 @@ public:
     string trainer_name;
     string client_full_name;
 };
-//создадим класс "Журнал учета клиентов":
 class ClientJournal {
 public:
     // Добавление нового клиента в журнал
@@ -41,13 +39,13 @@ public:
     Client find_client(const string& search_param);
 
     // Получение списка всех клиентов в журнале
-    vector<Client> get_all_clients();
+    std::vector<Client> get_all_clients();
 
     // Получение списка всех записей на тренировки для конкретного клиента
-    vector<WorkoutRecord> get_workout_records(const string& full_name);
+    std::vector<WorkoutRecord> get_workout_records(const string& full_name);
 
     // Получение списка всех записей на тренировки за определенный период времени
-    vector<WorkoutRecord> get_workout_records_by_period(const string& start_date, const string& end_date);
+    std::vector<WorkoutRecord> get_workout_records_by_period(const string& start_date, const string& end_date);
 
 private:
     vector<Client> clients_;
@@ -56,8 +54,6 @@ private:
     // Вспомогательная функция для поиска клиента
     bool matches_search_param(const Client& client, const string& search_param);
 };
-//методы класса "Журнал учета клиентов":
-
 void ClientJournal::add_client(const Client& client) {
     clients_.push_back(client);
 }
@@ -130,48 +126,125 @@ bool ClientJournal::matches_search_param(const Client& client, const string& sea
     return client.full_name == search_param || client.phone_number == search_param;
 }
 int main() {
-    setlocale (LC_ALL, "rus");
+    setlocale(LC_ALL, "rus");
     ClientJournal journal;
+    cout << "Выберите действие:\n";
+    cout << "1 - добавить клиента\n";
+    cout << "2 - добавить запись на тренировку\n";
+    cout << "3 - получить всех клиентов\n";
+    cout << "4 - получить записи на тренировки для конкретного клиента\n";
+    cout << "5 - получить записи на тренировки за определенный период времени\n";
+    cout << "6 - удалить запись на тренировку для конкретного клиента\n";
+    cout << "7 - удалить клиента из журнала\n";
+    cout << "0 - выход\n";
 
-    // Добавляем несколько клиентов
-    Client client1{ "Иванов Иван Иванович", "1234567890", "ivanov@mail.com", "01.01.2023", "31.12.2023" };
-    Client client2{ "Петров Петр Петрович", "0987654321", "petrov@mail.com", "01.01.2023", "31.12.2023" };
-    Client client3{ "Сидоров Сидор Сидорович", "5551234", "sidorov@mail.com", "01.01.2023", "31.12.2023" };
-    journal.add_client(client1);
-    journal.add_client(client2);
-    journal.add_client(client3);
-
-    // Добавляем записи на тренировки для клиентов
-    WorkoutRecord record1{ "01.06.2023", "10:00", "Йога", "Иванов Иван Иванович" };
-    WorkoutRecord record2{ "02.06.2023", "14:00", "Кроссфит", "Петров Петр Петрович" };
-    WorkoutRecord record3{ "03.06.2023", "18:00", "Бокс", "Сидоров Сидор Сидорович" };
-    journal.add_workout_record("Иванов Иван Иванович", record1);
-    journal.add_workout_record("Петров Петр Петрович", record2);
-    journal.add_workout_record("Сидоров Сидор Сидорович", record3);
-
-    // Получаем всех клиентов в журнале
-    vector<Client> all_clients = journal.get_all_clients();
-    for (const auto& client : all_clients) {
-        cout << "Клиент: " << client.full_name << endl;
+    int command;
+    cin >> command;
+    switch (command) {
+    case 1: {
+        string full_name, phone, email, start_date, end_date;
+        cout << "Введите данные клиента:\n";
+        cout << "ФИО: ";
+        getline(cin >> ws, full_name);
+        cout << "Телефон: ";
+        getline(cin >> ws, phone);
+        cout << "Email: ";
+        getline(cin >> ws, email);
+        cout << "Дата начала абонемента: ";
+        getline(cin >> ws, start_date);
+        cout << "Дата окончания абонемента: ";
+        getline(cin >> ws, end_date);
+        Client client{ full_name, phone, email, start_date, end_date };
+        journal.add_client(client);
+        cout << "Клиент добавлен\n";
+        break;
+    }
+    case 2: {
+        string client_name, workout_name, workout_date, workout_time;
+        cout << "Введите данные тренировки:\n";
+        cout << "ФИО клиента: ";
+        getline(cin >> ws, client_name);
+        cout << "Название тренировки: ";
+        getline(cin >> ws, workout_name);
+        cout << "Дата тренировки (ДД.ММ.ГГГГ): ";
+        getline(cin >> ws, workout_date);
+        cout << "Время тренировки (ЧЧ:ММ): ";
+        getline(cin >> ws, workout_time);
+        WorkoutRecord record{ workout_date, workout_time, workout_name, client_name };
+        journal.add_workout_record(client_name, record);
+        cout << "Запись на тренировку добавлена\n";
+        break;
+    }
+    case 3: {
+        vector<Client> all_clients = journal.get_all_clients();
+        for (const auto& client : all_clients) {
+            cout << "Клиент: " << client.full_name << endl;
+        }
+        break;
     }
 
-    // Получаем записи на тренировки для конкретного клиента
-    vector<WorkoutRecord> ivanov_records = journal.get_workout_records("Иванов Иван Иванович");
-    for (const auto& record : ivanov_records) {
-        cout << "Запись на тренировку: " << record.workout_name << " (" << record.workout_date << " " << record.workout_time << ")" << endl;
+    case 4: {
+        string client_name;
+        cout << "Введите ФИО клиента: ";
+        getline(cin >> ws, client_name);
+        vector<WorkoutRecord> client_records = journal.get_workout_records(client_name);
+        for (const auto& record : client_records) {
+            cout << "Запись на тренировку: " << record.workout_name << " (" << record.workout_date << " " << record.workout_time << ")" << endl;
+        }
+        break;
+    }
+    case 5: {
+        string start_date, end_date;
+        cout << "Введите период времени (ДД.ММ.ГГГГ):\n";
+        cout << "Начальная дата: ";
+        getline(cin >> ws, start_date);
+        cout << "Конечная дата: ";
+        getline(cin >> ws, end_date);
+        vector<WorkoutRecord> period_records = journal.get_workout_records_by_period(start_date, end_date);
+        for (const auto& record : period_records) {
+            cout << "Запись на тренировку: " << record.workout_name << " (" << record.workout_date << " " << record.workout_time << ")" << std::endl;
+            break;
+        }
+    }
+    case 6: {
+        string client_name, workout_date, workout_time;
+        cout << "Введите данные записи на тренировку:\n";
+        cout << "ФИО клиента: ";
+        getline(cin >> ws, client_name);
+        cout << "Дата тренировки (ДД.ММ.ГГГГ): ";
+        getline(cin >> ws, workout_date);
+        cout << "Время тренировки (ЧЧ:ММ): ";
+        getline(cin >> ws, workout_time);
+        journal.remove_workout_record(client_name, workout_date, workout_time);
+        cout << "Запись на тренировку удалена\n";
+        break;
+    }
+    case 7: {
+        string client_name;
+        cout << "Введите ФИО клиента: ";
+        getline(cin >> ws, client_name);
+        journal.remove_client(client_name);
+        cout << "Клиент удален\n";
+        break;
+    }
+    case 0: {
+        return 0;
+    }
+    default: {
+        cout << "Некорректная команда\n";
+        break;
+    }
+    }
     }
 
-    // Получаем записи на тренировки за определенный период времени
-    vector<WorkoutRecord> records_in_june = journal.get_workout_records_by_period("01.06.2023", "30.06.2023");
-    for (const auto& record : records_in_june) {
-        cout << "Запись на тренировку: " << record.workout_name << " (" << record.workout_date << " " << record.workout_time << ")" << std::endl;
-    }
 
-    // Удаляем запись на тренировку для конкретного клиента
-    journal.remove_workout_record("Иванов Иван Иванович", "01.06.2023", "10:00");
 
-    // Удаляем клиента из журнала
-    journal.remove_client("Петров Петр Петрович");
 
-    return 0;
-}
+
+
+
+
+
+
+   
+  

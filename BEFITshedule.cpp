@@ -1,6 +1,7 @@
 ﻿#include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 
 using namespace std;
@@ -157,6 +158,15 @@ int main() {
         Client client{ full_name, phone, email, start_date, end_date };
         journal.add_client(client);
         cout << "Клиент добавлен\n";
+        //Сохраним информацию в файл
+        ofstream file("client.txt", ios::app); // открываем файл для добавления
+        if (file.is_open()) { // проверяем, открылся ли файл
+            file << full_name << ":" << "\n" << "тел.: " << phone << "\n" << "эл.почта : " << email << "\n" << "срок абонемента: "<< start_date << "-" << end_date << "\n"<<endl; // добавляем строку в файл
+            file.close(); // закрываем файл
+        }
+        else {
+            cout << "Unable to open file" << endl;
+        }
         break;
     }
     case 2: {

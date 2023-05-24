@@ -126,6 +126,8 @@ vector<WorkoutRecord> ClientJournal::get_workout_records_by_period(const string&
 bool ClientJournal::matches_search_param(const Client& client, const string& search_param) {
     return client.full_name == search_param || client.phone_number == search_param;
 }
+
+
 int main() {
     setlocale(LC_ALL, "rus");
     ClientJournal journal;
@@ -161,7 +163,7 @@ int main() {
         //Сохраним информацию в файл
         ofstream file("client.txt", ios::app); // открываем файл для добавления
         if (file.is_open()) { // проверяем, открылся ли файл
-            file << full_name << ":" << "\n" << "тел.: " << phone << "\n" << "эл.почта : " << email << "\n" << "срок абонемента: "<< start_date << "-" << end_date << "\n"<<endl; // добавляем строку в файл
+            file << full_name << "\n" << "тел.: " << phone << "\n" << "эл.почта : " << email << "\n" << "срок абонемента: "<< start_date << "-" << end_date << "\n"<<endl; // добавляем строку в файл
             file.close(); // закрываем файл
         }
         else {
@@ -170,19 +172,73 @@ int main() {
         break;
     }
     case 2: {
-        string client_name, workout_name, workout_date, workout_time;
+        string full_name, workout_name, workout_date, workout_time;
         cout << "Введите данные тренировки:\n";
         cout << "ФИО клиента: ";
-        getline(cin >> ws, client_name);
-        cout << "Название тренировки: ";
-        getline(cin >> ws, workout_name);
-        cout << "Дата тренировки (ДД.ММ.ГГГГ): ";
-        getline(cin >> ws, workout_date);
-        cout << "Время тренировки (ЧЧ:ММ): ";
-        getline(cin >> ws, workout_time);
-        WorkoutRecord record{ workout_date, workout_time, workout_name, client_name };
-        journal.add_workout_record(client_name, record);
-        cout << "Запись на тренировку добавлена\n";
+        getline(cin >> ws, full_name);
+        ifstream file("client.txt"); // открыть файл для чтения
+        if (!file.is_open()) // проверяем, удалось ли открыть файл
+        {
+            cout << "Не удалось открыть файл!" << endl;
+            return 1;
+        }
+        string search_string = full_name; // зададим поиcк введенного ФИО клиента в файле client.txt
+        string line;
+        bool found = false;
+
+        while (getline(file, line)) // считываем строки из файла
+        {
+            if (line == search_string) // ищем ФИО
+            {
+                found = true;
+                cout << "Название тренировки: ";
+                getline(cin >> ws, workout_name);
+                cout << "Дата тренировки (ДД.ММ.ГГГГ): ";
+                getline(cin >> ws, workout_date);
+                cout << "Время тренировки (ЧЧ:ММ): ";
+                getline(cin >> ws, workout_time);
+                WorkoutRecord record{ workout_date, workout_time, workout_name, full_name };
+                journal.add_workout_record(full_name, record);
+                cout << "Запись на тренировку добавлена\n";
+                break;
+
+            }
+        }
+        if (!found) // если ФИО не найдено
+        {
+            cout << "ФИО не найдено!" << endl;
+            cout << "Хотите добавить клиента? (y/n): ";
+            char choice;
+            cin >> choice;
+            if (choice == 'y') {
+                string full_name, phone, email, start_date, end_date;
+                cout << "Введите данные клиента:\n";
+                cout << "ФИО: ";
+                getline(cin >> ws, full_name);
+                cout << "Телефон: ";
+                getline(cin >> ws, phone);
+                cout << "Email: ";
+                getline(cin >> ws, email);
+                cout << "Дата начала абонемента: ";
+                getline(cin >> ws, start_date);
+                cout << "Дата окончания абонемента: ";
+                getline(cin >> ws, end_date);
+                Client client{ full_name, phone, email, start_date, end_date };
+                journal.add_client(client);
+                cout << "Клиент добавлен\n";
+                //Сохраним информацию в файл
+                ofstream file("client.txt", ios::app); // открываем файл для добавления
+                if (file.is_open()) { // проверяем, открылся ли файл
+                    file << full_name << "\n" << "тел.: " << phone << "\n" << "эл.почта : " << email << "\n" << "срок абонемента: " << start_date << "-" << end_date << "\n" << endl; // добавляем строку в файл
+                    file.close(); // закрываем файл
+                }
+                else {
+                    cout << "Unable to open file" << endl;
+                }
+                break;
+            }
+        }
+        file.close(); // закрываем файл
         break;
     }
     case 3: {

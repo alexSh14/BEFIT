@@ -191,7 +191,59 @@ int main() {
             if (line == search_string) // ищем ФИО
             {
                 found = true;
-                cout << "Название тренировки: ";
+                cout << "Выберите номер тренировки: "<< endl;
+                cout << "1 - Йога\n";
+                cout << "2 - Зумба\n";
+                int training_name;
+                cin >> training_name;
+                switch (training_name) {
+                case 1: {
+                    cout << "Выберите дату тренировки: " << endl;
+                    ifstream file("sheduleYoga.txt"); // открываем файл для чтения
+                    if (file.is_open()) { // проверяем, открылся ли файл
+                        string line;
+                        while (getline(file, line)) { // считываем строки из файла
+                            cout << line << endl; // выводим их на экран
+                                        }
+                        file.close(); // закрываем файл
+                                                    }
+                    else {
+                        cout << "Unable to open file" << endl;
+                        break;
+                    }                    
+                }
+                case 2: {
+                    cout << "Выберите дату тренировки: " << endl;
+                    ifstream file("sheduleZumba.txt"); // открываем файл для чтения
+                    if (file.is_open()) { // проверяем, открылся ли файл
+                        string line;
+                        while (getline(file, line)) { // считываем строки из файла
+                            cout << line << endl; // выводим их на экран
+                        }
+                        file.close(); // закрываем файл
+                    }
+                    else {
+                        cout << "Unable to open file" << endl;
+                        break;
+                    }
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+                }
+
+
+
+
                 getline(cin >> ws, workout_name);
                 cout << "Дата тренировки (ДД.ММ.ГГГГ): ";
                 getline(cin >> ws, workout_date);

@@ -191,14 +191,20 @@ int main() {
             if (line == search_string) // ищем ФИО
             {
                 found = true;
-                cout << "Выберите номер тренировки: "<< endl;
+                ofstream file("Journal_training.txt", ios::app); // открываем файл для добавления ФИО в журнал тренировок
+                if (file.is_open()) { // проверяем, открылся ли файл
+                    file << full_name << "\n";// добавляем строку в файл
+                }
+                    file.close(); // закрываем файл
+
+                cout << "Выберите тренировку: "<< endl;
                 cout << "1 - Йога\n";
                 cout << "2 - Зумба\n";
                 int training_name;
                 cin >> training_name;
                 switch (training_name) {
                 case 1: {
-                    cout << "Выберите дату тренировки: " << endl;
+                    
                     ifstream file("sheduleYoga.txt"); // открываем файл для чтения
                     if (file.is_open()) { // проверяем, открылся ли файл
                         string line;
@@ -206,11 +212,61 @@ int main() {
                             cout << line << endl; // выводим их на экран
                                         }
                         file.close(); // закрываем файл
+                        cout << "Выберите дату тренировки: " << endl;
+                        int training_date;
+                        cin >> training_date;
+                        switch (training_date) {
+                        case 1: {
+
+                            ifstream file("sheduleYoga.txt");
+                            if (file.is_open()) {
+                                string line;
+                                if (getline(file, line)) {
+                                    if (getline(file, line)) { // считываем вторую строку
+
+                                    }
+                                    ofstream file("Journal_training.txt", ios::app); // открываем файл для добавления ФИО в журнал тренировок
+                                    if (file.is_open()) { // проверяем, открылся ли файл
+
+                                        file << line << "\n";// добавляем строку в файл
+                                    }
+                                    file.close(); // закрываем файл
+                                    break;
+                                }
+                            }
+                            
+                        }
+
+                        case 2: {
+                            ifstream file("sheduleYoga.txt");
+                            if (file.is_open()) {
+                                string line;
+                                if (getline(file, line)) {
+                                    if (getline(file, line)) { // считываем вторую строку
+                                        if (getline(file, line)) { // считываем вторую строку
+
+                                        }
+                                        ofstream file("Journal_training.txt", ios::app); // открываем файл для добавления ФИО в журнал тренировок
+                                        if (file.is_open()) { // проверяем, открылся ли файл
+
+                                            file << line << "\n";// добавляем строку в файл
+                                        }
+                                        file.close(); // закрываем файл
+                                        }
+                                        break;
+                                }
+                            }
+                                break;
+                            }
+                        }
+
+                        file.close(); // закрываем файл
                                                     }
                     else {
                         cout << "Unable to open file" << endl;
+                    }
                         break;
-                    }                    
+                                      
                 }
                 case 2: {
                     cout << "Выберите дату тренировки: " << endl;
@@ -241,16 +297,6 @@ int main() {
 
                 }
 
-
-
-
-                getline(cin >> ws, workout_name);
-                cout << "Дата тренировки (ДД.ММ.ГГГГ): ";
-                getline(cin >> ws, workout_date);
-                cout << "Время тренировки (ЧЧ:ММ): ";
-                getline(cin >> ws, workout_time);
-                WorkoutRecord record{ workout_date, workout_time, workout_name, full_name };
-                journal.add_workout_record(full_name, record);
                 cout << "Запись на тренировку добавлена\n";
                 break;
 

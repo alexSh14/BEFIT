@@ -269,7 +269,7 @@ int main() {
                                       
                 }
                 case 2: {
-                    cout << "Выберите дату тренировки: " << endl;
+
                     ifstream file("sheduleZumba.txt"); // открываем файл для чтения
                     if (file.is_open()) { // проверяем, открылся ли файл
                         string line;
@@ -277,24 +277,61 @@ int main() {
                             cout << line << endl; // выводим их на экран
                         }
                         file.close(); // закрываем файл
+                        cout << "Выберите дату тренировки: " << endl;
+                        int training_date;
+                        cin >> training_date;
+                        switch (training_date) {
+                        case 1: {
+
+                            ifstream file("sheduleZumba.txt");
+                            if (file.is_open()) {
+                                string line;
+                                if (getline(file, line)) {
+                                    if (getline(file, line)) { // считываем вторую строку
+
+                                    }
+                                    ofstream file("Journal_training.txt", ios::app); // открываем файл для добавления ФИО в журнал тренировок
+                                    if (file.is_open()) { // проверяем, открылся ли файл
+
+                                        file << line << "\n";// добавляем строку в файл
+                                    }
+                                    file.close(); // закрываем файл
+                                    break;
+                                }
+                            }
+
+                        }
+
+                        case 2: {
+                            ifstream file("sheduleZumba.txt");
+                            if (file.is_open()) {
+                                string line;
+                                if (getline(file, line)) {
+                                    if (getline(file, line)) { // считываем вторую строку
+                                        if (getline(file, line)) { // считываем вторую строку
+
+                                        }
+                                        ofstream file("Journal_training.txt", ios::app); // открываем файл для добавления ФИО в журнал тренировок
+                                        if (file.is_open()) { // проверяем, открылся ли файл
+
+                                            file << line << "\n";// добавляем строку в файл
+                                        }
+                                        file.close(); // закрываем файл
+                                    }
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        }
+
+                        file.close(); // закрываем файл
                     }
                     else {
                         cout << "Unable to open file" << endl;
-                        break;
                     }
-                }
-
-
-
-
-
-
-
-
-
-
-
-
+                    break;
+                    }
                 }
 
                 cout << "Запись на тренировку добавлена\n";

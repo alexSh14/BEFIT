@@ -377,9 +377,13 @@ int main() {
         break;
     }
     case 3: {
-        vector<Client> all_clients = journal.get_all_clients();
-        for (const auto& client : all_clients) {
-            cout << "Клиент: " << client.full_name << endl;
+        ifstream file("client.txt"); // открываем файл для чтения
+        if (file.is_open()) { // проверяем, открылся ли файл
+            string line;
+            while (getline(file, line)) { // считываем строки из файла
+                cout << line << endl; // выводим их на экран
+            }
+            file.close(); // закрываем файл
         }
         break;
     }

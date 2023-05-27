@@ -1,7 +1,7 @@
-﻿#include <string>
+﻿
 #include <vector>
-#include <iostream>
 #include <fstream>
+#include "FunctionSchedule.h"
 
 
 using namespace std;
@@ -128,6 +128,7 @@ bool ClientJournal::matches_search_param(const Client& client, const string& sea
 }
 
 
+
 int main() {
     setlocale(LC_ALL, "rus");
     ClientJournal journal;
@@ -145,30 +146,7 @@ int main() {
     cin >> command;
     switch (command) {
     case 1: {
-        string full_name, phone, email, start_date, end_date;
-        cout << "Введите данные клиента:\n";
-        cout << "ФИО: ";
-        getline(cin >> ws, full_name);
-        cout << "Телефон: ";
-        getline(cin >> ws, phone);
-        cout << "Email: ";
-        getline(cin >> ws, email);
-        cout << "Дата начала абонемента: ";
-        getline(cin >> ws, start_date);
-        cout << "Дата окончания абонемента: ";
-        getline(cin >> ws, end_date);
-        Client client{ full_name, phone, email, start_date, end_date };
-        journal.add_client(client);
-        cout << "Клиент добавлен\n";
-        //Сохраним информацию в файл
-        ofstream file("client.txt", ios::app); // открываем файл для добавления
-        if (file.is_open()) { // проверяем, открылся ли файл
-            file << full_name << "\n" << "тел.: " << phone << "\n" << "эл.почта : " << email << "\n" << "срок абонемента: "<< start_date << "-" << end_date << "\n"<<endl; // добавляем строку в файл
-            file.close(); // закрываем файл
-        }
-        else {
-            cout << "Unable to open file" << endl;
-        }
+        add_client("client.txt");
         break;
     }
     case 2: {
@@ -389,15 +367,43 @@ int main() {
     }
 
     case 4: {
-        string client_name;
-        cout << "Введите ФИО клиента: ";
-        getline(cin >> ws, client_name);
-        vector<WorkoutRecord> client_records = journal.get_workout_records(client_name);
-        for (const auto& record : client_records) {
-            cout << "Запись на тренировку: " << record.workout_name << " (" << record.workout_date << " " << record.workout_time << ")" << endl;
+        string сlientToDelete,name, phone, email, start_date, end_date;
+        cout << "Введите данные клиента:\n";
+        cout << "ФИО: ";
+        getline(cin >> ws, сlientToDelete);
+        ifstream file("client.txt"); // открыть файл для чтения
+        if (!file.is_open()) // проверяем, удалось ли открыть файл
+        {
+            cout << "Не удалось открыть файл!" << endl;
+            return 1;
         }
-        break;
-    }
+        string search_string = сlientToDelete; // зададим поиcк введенного ФИО клиента в файле client.txt
+        string line;
+        bool found = false;
+
+        while (getline(file, line)) // считываем строки из файла
+        {
+            if (line == search_string) // ищем ФИО
+            {
+                found = true;
+
+                ifstream inputFile("clients.txt");
+                if (!inputFile.is_open()) {
+                    cout << "Error: could not open input file." << endl;
+                    return 1;
+                }
+
+            }
+            file.close(); // закрываем файл
+        }
+        if (!found) // если ФИО не найдено
+        {
+            cout << "ФИО не найдено!" << endl;
+        }
+                break;
+
+            }
+        
     case 5: {
         string start_date, end_date;
         cout << "Введите период времени (ДД.ММ.ГГГГ):\n";

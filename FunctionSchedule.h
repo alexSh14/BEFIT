@@ -3,6 +3,8 @@
 #include "iostream"
 #include <fstream>
 #include <string>
+#include <vector>
+
 using namespace std;
 
 
@@ -30,4 +32,41 @@ void add_client(const std::string& filename) {
     else {
         std::cout << "Unable to open file\n";
     }
+}
+// Считывание файла
+bool open_file_for_reading(ifstream& file, const string& filename) {
+    file.open(filename);
+    if (!file.is_open()) {
+        cout << "Не удалось открыть файл " << filename << endl;
+        return false;
+    }
+    // читаем файл здесь...
+  
+    return true;
+}
+//Добавление в файл
+bool add_to_file(const string& filename, const string& data) {
+    ofstream file(filename, ios::app);
+    if (!file.is_open()) {
+        cout << "Не удалось открыть файл " << filename << endl;
+        return false;
+    }
+    file << data << "\n";
+    file.close();
+    return true;
+}
+
+std::vector<std::string> readLinesFromFile(const std::string& filePath) {
+    std::vector<std::string> lines; // создаем вектор строк для хранения строк из файла
+    std::ifstream file(filePath); // открываем файл для чтения
+
+    if (file.is_open()) { // проверяем, открылся ли файл
+        std::string line;
+        while (getline(file, line)) { // считываем строки из файла
+            lines.push_back(line); // добавляем считанную строку в вектор строк
+        }
+        file.close(); // закрываем файл
+    }
+
+    return lines; // возвращаем вектор строк с содержимым файла
 }

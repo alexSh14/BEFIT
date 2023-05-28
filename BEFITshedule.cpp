@@ -146,7 +146,7 @@ int main() {
     cin >> command;
     switch (command) {
     case 1: {
-        add_client("client.txt");
+        add_client("client.txt");//Добавляем нового клиента
         break;
     }
     case 2: {
@@ -173,22 +173,22 @@ int main() {
                 if (file.is_open()) { // проверяем, открылся ли файл
                     file << full_name << "\n";// добавляем строку в файл
                 }
-                    file.close(); // закрываем файл
+                file.close(); // закрываем файл
 
-                cout << "Выберите тренировку: "<< endl;
+                cout << "Выберите тренировку: " << endl;
                 cout << "1 - Йога\n";
                 cout << "2 - Зумба\n";
                 int training_name;
                 cin >> training_name;
                 switch (training_name) {
                 case 1: {
-                    
+
                     ifstream file("sheduleYoga.txt"); // открываем файл для чтения
                     if (file.is_open()) { // проверяем, открылся ли файл
                         string line;
                         while (getline(file, line)) { // считываем строки из файла
                             cout << line << endl; // выводим их на экран
-                                        }
+                        }
                         file.close(); // закрываем файл
                         cout << "Выберите дату тренировки: " << endl;
                         int training_date;
@@ -212,7 +212,7 @@ int main() {
                                     break;
                                 }
                             }
-                            
+
                         }
 
                         case 2: {
@@ -230,21 +230,21 @@ int main() {
                                             file << line << "\n";// добавляем строку в файл
                                         }
                                         file.close(); // закрываем файл
-                                        }
-                                        break;
+                                    }
+                                    break;
                                 }
                             }
-                                break;
-                            }
+                            break;
+                        }
                         }
 
                         file.close(); // закрываем файл
-                                                    }
+                    }
                     else {
                         cout << "Unable to open file" << endl;
                     }
-                        break;
-                                      
+                    break;
+
                 }
                 case 2: {
 
@@ -309,7 +309,7 @@ int main() {
                         cout << "Unable to open file" << endl;
                     }
                     break;
-                    }
+                }
                 }
 
                 cout << "Запись на тренировку добавлена\n";
@@ -324,30 +324,7 @@ int main() {
             char choice;
             cin >> choice;
             if (choice == 'y') {
-                string full_name, phone, email, start_date, end_date;
-                cout << "Введите данные клиента:\n";
-                cout << "ФИО: ";
-                getline(cin >> ws, full_name);
-                cout << "Телефон: ";
-                getline(cin >> ws, phone);
-                cout << "Email: ";
-                getline(cin >> ws, email);
-                cout << "Дата начала абонемента: ";
-                getline(cin >> ws, start_date);
-                cout << "Дата окончания абонемента: ";
-                getline(cin >> ws, end_date);
-                Client client{ full_name, phone, email, start_date, end_date };
-                journal.add_client(client);
-                cout << "Клиент добавлен\n";
-                //Сохраним информацию в файл
-                ofstream file("client.txt", ios::app); // открываем файл для добавления
-                if (file.is_open()) { // проверяем, открылся ли файл
-                    file << full_name << "\n" << "тел.: " << phone << "\n" << "эл.почта : " << email << "\n" << "срок абонемента: " << start_date << "-" << end_date << "\n" << endl; // добавляем строку в файл
-                    file.close(); // закрываем файл
-                }
-                else {
-                    cout << "Unable to open file" << endl;
-                }
+                add_client("client.txt");//Добавляем нового клиента              
                 break;
             }
         }
@@ -367,7 +344,7 @@ int main() {
     }
 
     case 4: {
-        string сlientToDelete,name, phone, email, start_date, end_date;
+        string сlientToDelete, name, phone, email, start_date, end_date;
         cout << "Введите данные клиента:\n";
         cout << "ФИО: ";
         getline(cin >> ws, сlientToDelete);
@@ -400,10 +377,10 @@ int main() {
         {
             cout << "ФИО не найдено!" << endl;
         }
-                break;
+        break;
 
-            }
-        
+    }
+
     case 5: {
         string start_date, end_date;
         cout << "Введите период времени (ДД.ММ.ГГГГ):\n";
@@ -446,7 +423,8 @@ int main() {
         break;
     }
     }
-    }
+}
+
 
 
 

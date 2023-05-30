@@ -33,40 +33,46 @@ void add_client(const std::string& filename) {
         std::cout << "Unable to open file\n";
     }
 }
-// Считывание файла
-bool open_file_for_reading(ifstream& file, const string& filename) {
-    file.open(filename);
-    if (!file.is_open()) {
-        cout << "Не удалось открыть файл " << filename << endl;
-        return false;
-    }
-    // читаем файл здесь...
-  
-    return true;
-}
-//Добавление в файл
-bool add_to_file(const string& filename, const string& data) {
-    ofstream file(filename, ios::app);
-    if (!file.is_open()) {
-        cout << "Не удалось открыть файл " << filename << endl;
-        return false;
-    }
-    file << data << "\n";
-    file.close();
-    return true;
-}
-
-std::vector<std::string> readLinesFromFile(const std::string& filePath) {
-    std::vector<std::string> lines; // создаем вектор строк для хранения строк из файла
-    std::ifstream file(filePath); // открываем файл для чтения
-
-    if (file.is_open()) { // проверяем, открылся ли файл
-        std::string line;
-        while (getline(file, line)) { // считываем строки из файла
-            lines.push_back(line); // добавляем считанную строку в вектор строк
+// Вывести на экран текст из файла
+void printFileContents(const string& filename) {
+    ifstream file(filename);
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            cout << line << endl;
         }
-        file.close(); // закрываем файл
+        file.close();
     }
-
-    return lines; // возвращаем вектор строк с содержимым файла
+}
+// 
+void appendLinesToFile(const string& inputFilename, const string& outputFilename) {
+    ifstream inputFile(inputFilename);
+    if (inputFile.is_open()) {
+        string line1, line2;
+        if (getline(inputFile, line1) && getline(inputFile, line2)) {
+            ofstream outputFile(outputFilename, std::ios::app);
+            if (outputFile.is_open()) {
+                outputFile << line1 << "\n";
+                outputFile << line2 << "\n";
+            }
+            outputFile.close();
+        }
+        inputFile.close();
+    }
+}
+//
+void appendLinesToFile2(const string& inputFilename, const string& outputFilename) {
+    ifstream inputFile(inputFilename);
+    if (inputFile.is_open()) {
+        string line1, line2, line3;
+        if (getline(inputFile, line1) && getline(inputFile, line2) && getline(inputFile, line3)) {
+            ofstream outputFile(outputFilename, ios::app);
+            if (outputFile.is_open()) {
+                outputFile << line1 << "\n";
+                outputFile << line3 << "\n";
+            }
+            outputFile.close();
+        }
+        inputFile.close();
+    }
 }

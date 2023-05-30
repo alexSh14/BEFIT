@@ -140,6 +140,7 @@ int main() {
     cout << "5 - получить записи на тренировки за определенный период времени\n";
     cout << "6 - удалить запись на тренировку для конкретного клиента\n";
     cout << "7 - удалить клиента из журнала\n";
+    cout << "8 - найти клиента";
     cout << "0 - выход\n";
 
     int command;
@@ -163,7 +164,6 @@ int main() {
         string search_string = full_name; // зададим поиcк введенного ФИО клиента в файле client.txt
         string line;
         bool found = false;
-
         while (getline(file, line)) // считываем строки из файла
         {
             if (line == search_string) // ищем ФИО
@@ -174,7 +174,6 @@ int main() {
                     file << full_name << "\n";// добавляем строку в файл
                 }
                 file.close(); // закрываем файл
-
                 cout << "Выберите тренировку: " << endl;
                 cout << "1 - Йога\n";
                 cout << "2 - Зумба\n";
@@ -195,49 +194,17 @@ int main() {
                         cin >> training_date;
                         switch (training_date) {
                         case 1: {
-
-                            ifstream file("sheduleYoga.txt");
-                            if (file.is_open()) {
-                                string line;
-                                if (getline(file, line)) {
-                                    if (getline(file, line)) { // считываем вторую строку
-
-                                    }
-                                    ofstream file("Journal_training.txt", ios::app); // открываем файл для добавления ФИО в журнал тренировок
-                                    if (file.is_open()) { // проверяем, открылся ли файл
-
-                                        file << line << "\n";// добавляем строку в файл
-                                    }
-                                    file.close(); // закрываем файл
-                                    break;
-                                }
-                            }
-
-                        }
-
-                        case 2: {
-                            ifstream file("sheduleYoga.txt");
-                            if (file.is_open()) {
-                                string line;
-                                if (getline(file, line)) {
-                                    if (getline(file, line)) { // считываем вторую строку
-                                        if (getline(file, line)) { // считываем вторую строку
-
-                                        }
-                                        ofstream file("Journal_training.txt", ios::app); // открываем файл для добавления ФИО в журнал тренировок
-                                        if (file.is_open()) { // проверяем, открылся ли файл
-
-                                            file << line << "\n";// добавляем строку в файл
-                                        }
-                                        file.close(); // закрываем файл
-                                    }
-                                    break;
-                                }
-                            }
+                            appendLinesToFile("sheduleYoga.txt", "Journal_training.txt");
+                            
                             break;
                         }
+                        case 2: {
+                            appendLinesToFile2("sheduleYoga.txt", "Journal_training.txt");
+                                    
+                                    break;
+                                }
+                            
                         }
-
                         file.close(); // закрываем файл
                     }
                     else {
@@ -247,7 +214,6 @@ int main() {
 
                 }
                 case 2: {
-
                     ifstream file("sheduleZumba.txt"); // открываем файл для чтения
                     if (file.is_open()) { // проверяем, открылся ли файл
                         string line;
@@ -260,49 +226,18 @@ int main() {
                         cin >> training_date;
                         switch (training_date) {
                         case 1: {
-
-                            ifstream file("sheduleZumba.txt");
-                            if (file.is_open()) {
-                                string line;
-                                if (getline(file, line)) {
-                                    if (getline(file, line)) { // считываем вторую строку
-
-                                    }
-                                    ofstream file("Journal_training.txt", ios::app); // открываем файл для добавления ФИО в журнал тренировок
-                                    if (file.is_open()) { // проверяем, открылся ли файл
-
-                                        file << line << "\n";// добавляем строку в файл
-                                    }
-                                    file.close(); // закрываем файл
-                                    break;
-                                }
-                            }
-
+                            appendLinesToFile("sheduleZumba.txt", "Journal_training.txt");
+                            break;
+                                                           
                         }
-
                         case 2: {
-                            ifstream file("sheduleZumba.txt");
-                            if (file.is_open()) {
-                                string line;
-                                if (getline(file, line)) {
-                                    if (getline(file, line)) { // считываем вторую строку
-                                        if (getline(file, line)) { // считываем вторую строку
-
-                                        }
-                                        ofstream file("Journal_training.txt", ios::app); // открываем файл для добавления ФИО в журнал тренировок
-                                        if (file.is_open()) { // проверяем, открылся ли файл
-
-                                            file << line << "\n";// добавляем строку в файл
-                                        }
-                                        file.close(); // закрываем файл
-                                    }
+                            appendLinesToFile2("sheduleZumba.txt", "Journal_training.txt");
                                     break;
-                                }
+                                
                             }
                             break;
                         }
-                        }
-
+                        
                         file.close(); // закрываем файл
                     }
                     else {
@@ -311,10 +246,8 @@ int main() {
                     break;
                 }
                 }
-
                 cout << "Запись на тренировку добавлена\n";
                 break;
-
             }
         }
         if (!found) // если ФИО не найдено
@@ -324,7 +257,30 @@ int main() {
             char choice;
             cin >> choice;
             if (choice == 'y') {
-                add_client("client.txt");//Добавляем нового клиента              
+                string full_name, phone, email, start_date, end_date;
+                cout << "Введите данные клиента:\n";
+                cout << "ФИО: ";
+                getline(cin >> ws, full_name);
+                cout << "Телефон: ";
+                getline(cin >> ws, phone);
+                cout << "Email: ";
+                getline(cin >> ws, email);
+                cout << "Дата начала абонемента: ";
+                getline(cin >> ws, start_date);
+                cout << "Дата окончания абонемента: ";
+                getline(cin >> ws, end_date);
+                Client client{ full_name, phone, email, start_date, end_date };
+                journal.add_client(client);
+                cout << "Клиент добавлен\n";
+                //Сохраним информацию в файл
+                ofstream file("client.txt", ios::app); // открываем файл для добавления
+                if (file.is_open()) { // проверяем, открылся ли файл
+                    file << full_name << "\n" << "тел.: " << phone << "\n" << "эл.почта : " << email << "\n" << "срок абонемента: " << start_date << "-" << end_date << "\n" << endl; // добавляем строку в файл
+                    file.close(); // закрываем файл
+                }
+                else {
+                    cout << "Unable to open file" << endl;
+                }
                 break;
             }
         }
@@ -332,14 +288,7 @@ int main() {
         break;
     }
     case 3: {
-        ifstream file("client.txt"); // открываем файл для чтения
-        if (file.is_open()) { // проверяем, открылся ли файл
-            string line;
-            while (getline(file, line)) { // считываем строки из файла
-                cout << line << endl; // выводим их на экран
-            }
-            file.close(); // закрываем файл
-        }
+        printFileContents("client.txt");
         break;
     }
 
@@ -413,6 +362,35 @@ int main() {
         getline(cin >> ws, client_name);
         journal.remove_client(client_name);
         cout << "Клиент удален\n";
+        break;
+    }
+    case 8: {
+        string name;
+        ifstream file("client.txt"); // открыть файл на чтение
+        string line;
+        string currentName; // текущее имя клиента
+        cin >> currentName;
+        bool found = false; // флаг, указывающий, был ли найден клиент
+        while (getline(file, line)) { // читать файл построчно
+            if (line.empty()) { // если строка пустая (конец предыдущего клиента или начало файла)
+                currentName = ""; // сбросить имя текущего клиента
+                found = false; // сбросить флаг
+            }
+            else if (name.empty()) { // если имя текущего клиента не задано
+                currentName = line; // задать имя текущего клиента
+                if (currentName == name) { // если имя текущего клиента совпадает с искомым именем
+                    found = true; // установить флаг
+                }
+            }
+            else if (found) { // если клиент был найден
+                cout << line << endl; // вывести информацию о клиенте
+            }
+        }
+        if (!found) { // если клиент не был найден
+            cout << "Client not found." << endl;
+        }
+            
+
         break;
     }
     case 0: {

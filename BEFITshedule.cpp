@@ -171,7 +171,7 @@ int main() {
                 found = true;
                 ofstream file("Journal_training.txt", ios::app); // открываем файл для добавления ФИО в журнал тренировок
                 if (file.is_open()) { // проверяем, открылся ли файл
-                    file << full_name << "\n";// добавляем строку в файл
+                    file << full_name << ",";// добавляем строку в файл
                 }
                 file.close(); // закрываем файл
                 cout << "Выберите тренировку: " << endl;
@@ -195,12 +195,12 @@ int main() {
                         switch (training_date) {
                         case 1: {
                             appendLinesToFile("sheduleYoga.txt", "Journal_training.txt");
-                            
+                          
                             break;
                         }
                         case 2: {
                             appendLinesToFile2("sheduleYoga.txt", "Journal_training.txt");
-                                    
+                            
                                     break;
                                 }
                             
@@ -292,40 +292,50 @@ int main() {
         break;
     }
 
-    case 4: {
-        string сlientToDelete, name, phone, email, start_date, end_date;
-        cout << "Введите данные клиента:\n";
-        cout << "ФИО: ";
-        getline(cin >> ws, сlientToDelete);
-        ifstream file("client.txt"); // открыть файл для чтения
-        if (!file.is_open()) // проверяем, удалось ли открыть файл
-        {
-            cout << "Не удалось открыть файл!" << endl;
+    case 4: 
+    {
+        string filename = "Journal_training.txt";
+        string client_name = "Shtadler Andrey Andreech";
+
+        ifstream file(filename);
+        if (!file.is_open()) {
+            cout << "Ошибка открытия файла" << endl;
             return 1;
         }
-        string search_string = сlientToDelete; // зададим поиcк введенного ФИО клиента в файле client.txt
+
+        vector<string> records;
         string line;
-        bool found = false;
-
-        while (getline(file, line)) // считываем строки из файла
-        {
-            if (line == search_string) // ищем ФИО
-            {
-                found = true;
-
-                ifstream inputFile("clients.txt");
-                if (!inputFile.is_open()) {
-                    cout << "Error: could not open input file." << endl;
-                    return 1;
+        while (getline(file, line)) {
+            string name, training, date;
+            size_t pos1 = 0, pos2 = 0;
+            pos1 = line.find(',');
+            if (pos1 != string::npos) {
+                name = line.substr(0, pos1);
+                pos2 = line.find(',', pos1 + 1);
+                if (pos2 != string::npos) {
+                    training = line.substr(pos1 + 1, pos2 - pos1 - 1);
+                    date = line.substr(pos2 + 1);
+                    if (name == client_name) {
+                        records.push_back(line);
+                    }
                 }
-
             }
-            file.close(); // закрываем файл
         }
-        if (!found) // если ФИО не найдено
-        {
-            cout << "ФИО не найдено!" << endl;
+
+        file.close();
+
+        if (records.empty()) {
+            cout << "Записей для клиента " << client_name << " не найдено" << endl;
         }
+        else {
+            cout << "Записи для клиента " << client_name << ":" << endl;
+            for (const string& record : records) {
+                cout << record << endl;
+            }
+        }
+
+        
+    
         break;
 
     }

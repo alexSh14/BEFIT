@@ -52,8 +52,9 @@ void appendLinesToFile(const string& inputFilename, const string& outputFilename
         if (getline(inputFile, line1) && getline(inputFile, line2)) {
             ofstream outputFile(outputFilename, std::ios::app);
             if (outputFile.is_open()) {
-                outputFile << line1 << "\n";
-                outputFile << line2 << "\n";
+                outputFile << line1 << ",";
+                outputFile << line2 <<endl;
+                
             }
             outputFile.close();
         }
@@ -68,11 +69,42 @@ void appendLinesToFile2(const string& inputFilename, const string& outputFilenam
         if (getline(inputFile, line1) && getline(inputFile, line2) && getline(inputFile, line3)) {
             ofstream outputFile(outputFilename, ios::app);
             if (outputFile.is_open()) {
-                outputFile << line1 << "\n";
-                outputFile << line3 << "\n";
+                outputFile << line1 << ",";
+                outputFile << line3 <<endl;
+                
+
             }
             outputFile.close();
         }
         inputFile.close();
     }
+}
+//
+void get_client_workouts(const string& full_name) {
+    ifstream file("Journal_training.txt"); // открываем файл для чтения
+    if (!file.is_open()) { // проверяем, удалось ли открыть файл
+        cout << "Не удалось открыть файл!" << endl;
+        return;
+    }
+    string search_string = full_name; // зададим поиск введенного ФИО клиента в файле workouts.txt
+    string line;
+    bool found = false;
+    while (getline(file, line)) { // считываем строки из файла
+        if (line == search_string) { // ищем ФИО
+            found = true;
+            cout << "Записи на тренировки для клиента " << full_name << ":" << endl;
+            getline(file, line); // пропустим строку с ФИО клиента
+            while (getline(file, line)) { // считываем строки с записями на тренировки для этого клиента
+                if (line.empty()) { // если строка пустая, то все записи на тренировки для данного клиента были прочитаны
+                    break;
+                }
+                cout << line << endl; // выводим строку на экран
+            }
+            break;
+        }
+    }
+    if (!found) { // если ФИО не найдено
+        cout << "ФИО не найдено!" << endl;
+    }
+    file.close(); // закрываем файл
 }

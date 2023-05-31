@@ -1,44 +1,4 @@
-Shadura Aleksey Vasilevich
-2 - 02.06.2023 20:00
-Shadura Aleksey Vasilevich
-Shtadler Andrey Andreech
-YOGA
-2 - 02.06.2023 19:00
-Shtadler Andrey Andreech
-1 - 01.06.2023 20:00
-Shtadler Andrey Andreech
-1 - 01.06.2023 20:00
-Shadura Aleksey Vasilevich
-2 - 02.06.2023 19:00
-Shadura Aleksey Vasilevich
-1 - 01.06.2023 20:00
-Shadura Aleksey Vasilevich
-YOGA
-Shtadler Andrey Andreech
-2 - 02.06.2023 19:00
-Shadura Aleksey Vasilevich
-2 - 02.06.2023 19:00
-Shadura Aleksey Vasilevich
-YOGA
-1 - 01.06.2023 19:00
-Shtadler Andrey Andreech
-YOGA
-1 - 01.06.2023 19:00
-Shadura Aleksey Vasilevich
-YOGA
-1 - 01.06.2023 19:00
-Shtadler Andrey Andreech
-YOGA
-2 - 02.06.2023 19:00
-Shadura Aleksey Vasilevich
-Zumba
-1 - 01.06.2023 20:00
-Shadura Aleksey Vasilevich
-YOGA
-2 - 02.06.2023 19:00
-Shadura Aleksey Vasilevich
-Zumba
-2 - 02.06.2023 20:00
-Shtadler Andrey Andreech
-Zumba
-2 - 02.06.2023 20:00
+Shtadler Andrey Andreech,Zumba,2 - 02.06.2023 20:00
+Shtadler Andrey Andreech,YOGA,1 - 01.06.2023 19:00
+Shadura Aleksey Vasilevich,Zumba,1 - 01.06.2023 20:00
+Shtadler Andrey Andreech,Zumba,1 - 01.06.2023 20:00

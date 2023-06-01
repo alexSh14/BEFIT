@@ -2,3 +2,5 @@ Shtadler Andrey Andreech,Zumba,2 - 02.06.2023 20:00
 Shtadler Andrey Andreech,YOGA,1 - 01.06.2023 19:00
 Shadura Aleksey Vasilevich,Zumba,1 - 01.06.2023 20:00
 Shtadler Andrey Andreech,Zumba,1 - 01.06.2023 20:00
+Shadura Aleksey Vasilevich,YOGA,1 - 01.06.2023 19:00
+Shadura Aleksey Vasilevich,Zumba,2 - 02.06.2023 20:00

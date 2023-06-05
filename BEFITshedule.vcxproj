@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClInclude Include="Header.h" />
     <ClInclude Include="FunctionSchedule.h" />
+    <ClInclude Include="FunctionClass.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

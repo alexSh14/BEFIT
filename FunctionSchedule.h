@@ -27,7 +27,7 @@ void add_client(const std::string& filename) {
     if (file.is_open()) {
         file << full_name << "\n" << "тел.: " << phone << "\n" << "эл.почта : " << email << "\n" << "срок абонемента: " << start_date << "-" << end_date << "\n" << std::endl;
         file.close();
-        std::cout << "Клиент добавлен\n";
+        cout << "Клиент добавлен\n";
     }
     else {
         std::cout << "Unable to open file\n";

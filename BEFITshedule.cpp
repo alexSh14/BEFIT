@@ -4,7 +4,28 @@
 #include <vector>
 #include <chrono>
 using namespace std;
+class Person {
+private:
+    string name;
+    int telephone;
+    string email;
 
+public:
+    Person(string name, int telephone, string email)
+        : name(name), telephone(telephone), email(email) {}
+
+    string GetName() {
+        return name;
+    }
+
+    string GetTelephone() {
+        return to_string(telephone);
+    }
+
+    string GetEmail() {
+        return email;
+    }
+};
 class Client {
 public:
     Client(string name, string phone, string email, string start_date, string end_date) :
@@ -16,13 +37,122 @@ public:
     string GetStartDate() const { return start_date_; }
     string GetEndDate() const { return end_date_; }
 
+    // Функция добавления клиента
     void AddClientToFile() const {
         // Открываем файл для записи в конец
-        ofstream out_file("clients.txt", ios::app); 
+        ofstream out_file("clients.txt", ios::app);
         // Записываем данные в файл
         out_file << "\n" << GetName() << "\n" << "тел.: " << GetPhone() << "\n" << "эл.почта : " << GetEmail() << "\n" << "срок абонемента: " << GetStartDate() << "-" << GetEndDate() << "\n" << endl;
         out_file.close();
         cout << "Клиент " << GetName() << " успешно добавлен в файл.\n\n";
+    }
+    // Функция для удаления клиента из файла
+    void RemoveClientFromFile(string name) const {
+        ifstream in_file("clients.txt");
+        ofstream out_file("temp.txt");
+        string line;
+
+        while (getline(in_file, line)) {
+            if (line.empty() || line == "\n") {
+                // Если строка пустая или содержит только символ переноса строки,
+                // то пропускаем её и не записываем в выходной файл
+                continue;
+            }
+
+            if (line.find(name) == 0) {
+                // Если строка начинается с указанной фамилии клиента,
+                // то пропускаем её и пропускаем все последующие строки до символа переноса строки
+                while (getline(in_file, line)) {
+                    if (line.empty() || line == "\n") {
+                        // Если строка пустая или содержит только символ переноса строки,
+                        // то пропускаем её и не записываем в выходной файл
+                        break;
+                    }
+                }
+
+                continue;
+            }
+
+            // Иначе записываем строку в выходной файл
+            out_file << line << endl;
+            // Если строка содержит информацию о клиенте, то записываем отступ
+            if (line.find("срок абонемента:") == 0) {
+                out_file << endl;
+            }
+        }
+
+        in_file.close();
+        out_file.close();
+
+        // Заменяем исходный файл на файл с удаленными данными
+        remove("clients.txt");
+        rename("temp.txt", "clients.txt");
+        cout << "Клиент " << name << " удален\n";
+    }
+    // Функция для обновления данных клиента в файле
+    static void Update_client(string name, string phone, string email, string start_date, string end_date) {
+        cout << "Введите ФИО клиента, данные которого нужно обновить: ";
+        getline(cin, name);
+        ifstream in_file("clients.txt");
+        ofstream out_file("temp.txt");
+        string line;
+        bool found = false;
+
+        while (getline(in_file, line)) {
+            if (line.empty() || line == "\n") {
+                // Если строка пустая или содержит только символ переноса строки,
+                // то пропускаем её и не записываем в выходной файл
+                continue;
+            }
+
+            size_t name_pos = line.find(name);
+            if (name_pos == 0) {
+                // Если строка начинается с указанной фамилии клиента,
+                // то считываем информацию о клиенте и обновляем нужные поля
+                string name = line.substr(0, name_pos + name.length());
+                string phone, email, start_date, end_date;
+
+                getline(in_file, phone);
+                getline(in_file, email);
+                getline(in_file, start_date);
+                getline(in_file, end_date);
+
+                // Обновляем поля
+                cout << "Введите новый номер телефона: ";
+                getline(cin, phone);
+                cout << "Введите новый email: ";
+                getline(cin, email);
+                cout << "Введите новую дату начала абонемента: ";
+                getline(cin, start_date);
+                cout << "Введите новую дату окончания абонемента: ";
+                getline(cin, end_date);
+
+                // Записываем обновленную информацию о клиенте в выходной файл
+                out_file << "\n" << name << "\n" << "тел.: " << phone << "\n" << "эл.почта : " << email << "\n" << "срок абонемента: " << start_date << "-" << end_date << "\n" << endl;;
+                found = true;
+                continue;
+            }
+
+            // Иначе записываем строку в выходной файл
+            out_file << line << endl;
+            // Если строка содержит информацию о клиенте, то записываем отступ
+            if (line.find("срок абонемента:") == 0) {
+                out_file << endl;
+            }
+        }
+
+        in_file.close();
+        out_file.close();
+
+        if (!found) {
+            cout << "Клиент с указанным ФИО не найден" << endl;
+        }
+        else {
+            // Заменяем исходный файл на файл с обновленными данными
+            remove("clients.txt");
+            rename("temp.txt", "clients.txt");
+            cout << "Данные о клиенте успешно обновлены" << endl;
+        }
     }
 private:
     string name_;
@@ -31,143 +161,6 @@ private:
     string start_date_;
     string end_date_;
 };
-
-// Функция добавления клиента
-void add_client() {
-    // Запрашиваем данные у пользователя и создаем объект класса Client
-    string name, phone, email, start_date, end_date;
-    cout << "Введите данные клиента:\n";
-    cout << "ФИО: ";
-    getline(cin, name);
-    cout << "Телефон: ";
-    getline(cin, phone);
-    cout << "Email: ";
-    getline(cin, email);
-    cout << "Дата начала обслуживания: ";
-    getline(cin, start_date);
-    cout << "Дата окончания обслуживания: ";
-    getline(cin, end_date);
-
-    Client client(name, phone, email, start_date, end_date);
-
-    // Вызываем метод AddClientToFile() у объекта client
-    client.AddClientToFile();
-}
-
-// Функция для удаления клиента из файла
-void delete_client() {
-    string name, phone, email, start_date, end_date;
-    cout << "Для удаления введите ФИО: ";
-    getline(cin, name);
-    ifstream in_file("clients.txt");
-    ofstream out_file("temp.txt");
-    string line;
-
-    while (getline(in_file, line)) {
-
-        if (line.empty() || line == "\n") {
-            // Если строка пустая или содержит только символ переноса строки,
-            // то пропускаем её и не записываем в выходной файл
-            continue;
-        }
-
-        if (line.find(name) == 0) {
-            // Если строка начинается с указанной фамилии клиента,
-            // то пропускаем её и пропускаем все последующие строки до символа переноса строки
-            while (getline(in_file, line)) {
-                if (line.empty() || line == "\n") {
-                    // Если строка пустая или содержит только символ переноса строки,
-                    // то пропускаем её и не записываем в выходной файл
-                    break;
-                }
-            }
-
-            continue;
-        }
-
-        // Иначе записываем строку в выходной файл
-        out_file << line << endl;
-        // Если строка содержит информацию о клиенте, то записываем отступ
-        if (line.find("срок абонемента:") == 0) {
-            out_file << endl;
-        }
-    }
-
-    in_file.close();
-    out_file.close();
-
-    // Заменяем исходный файл на файл с удаленными данными
-    remove("clients.txt");
-    rename("temp.txt", "clients.txt");
-    cout << "Клиент " << name << " удален";
-}
-
-// Функция для обновления данных клиента в файле
-void update_client() {
-    string name, phone, email, start_date, end_date;
-    cout << "Введите ФИО клиента, данные которого нужно обновить: ";
-    getline(cin, name);
-    ifstream in_file("clients.txt");
-    ofstream out_file("temp.txt");
-    string line;
-    bool found = false;
-
-    while (getline(in_file, line)) {
-        if (line.empty() || line == "\n") {
-            // Если строка пустая или содержит только символ переноса строки,
-            // то пропускаем её и не записываем в выходной файл
-            continue;
-        }
-
-        size_t name_pos = line.find(name);
-        if (name_pos == 0) {
-            // Если строка начинается с указанной фамилии клиента,
-            // то считываем информацию о клиенте и обновляем нужные поля
-            string name = line.substr(0, name_pos + name.length());
-            string phone, email, start_date, end_date;
-            getline(in_file, phone);
-            getline(in_file, email);
-            getline(in_file, start_date);
-            getline(in_file, end_date);
-
-            // Обновляем поля телефона, почты и абонемента
-            cout << "Введите новый номер телефона: ";
-            getline(cin, phone);
-            cout << "Введите новый email: ";
-            getline(cin, email);
-            cout << "Введите новую дату начала абонемента: ";
-            getline(cin, start_date);
-            cout << "Введите новую дату окончания абонемента: ";
-            getline(cin, end_date);
-
-            // Записываем обновленную информацию о клиенте в выходной файл
-            out_file << "\n" << name << ";\n" << "тел.: " << phone << ";\n" << "эл.почта : " << email << ";\n" << "срок абонемента: " << start_date << "-" << end_date << ";\n" << endl;;
-            found = true;
-            continue;
-        }
-
-        // Иначе записываем строку в выходной файл
-        out_file << line << endl;
-        // Если строка содержит информацию о клиенте, то записываем отступ
-        if (line.find("срок абонемента:") == 0) {
-            out_file << endl;
-        }
-    }
-
-    in_file.close();
-    out_file.close();
-
-    if (!found) {
-        cout << "Клиент с указанным ФИО не найден" << endl;
-    }
-    else {
-        // Заменяем исходный файл на файл с обновленными данными
-        remove("clients.txt");
-        rename("temp.txt", "clients.txt");
-        cout << "Данные о клиенте успешно обновлены" << endl;
-    }
-
-}
 
 // Функция для поиска клиента в файле
 void print_client_info_from_file() {
@@ -329,15 +322,34 @@ int main() {
         cin.ignore();
         switch (command) {
         case 1: {
-            add_client();
+            string name, phone, email, start_date, end_date;
+            cout << "Введите данные клиента:\n";
+            cout << "ФИО: ";
+            getline(cin, name);
+            cout << "Телефон: ";
+            getline(cin, phone);
+            cout << "Email: ";
+            getline(cin, email);
+            cout << "Дата начала обслуживания: ";
+            getline(cin, start_date);
+            cout << "Дата окончания обслуживания: ";
+            getline(cin, end_date);
+            Client client(name, phone, email, start_date, end_date);
+            // Вызываем метод AddClientToFile() у объекта client
+            client.AddClientToFile();
             break;
         }
         case 2: {
-            delete_client();
+            string name;
+            cout << "Для удаления введите ФИО: ";
+            getline(cin, name);
+            Client client("", "", "", "", "");
+            client.RemoveClientFromFile(name);
             break;
         }
         case 3: {
-            update_client();
+            string name, phone, email, start_date, end_date;
+            Client::Update_client(name, phone, email, start_date, end_date);
             break;
         }
         case 4: {
@@ -553,20 +565,13 @@ int main() {
             }
 
             break;
-
-
-
-
-
-
         }
+
         case 4: {
 
 
 
-
-
-
+            break;
         }
 
         }
@@ -578,5 +583,3 @@ int main() {
     }
     return 0;
 }
-
-

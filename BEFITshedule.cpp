@@ -10,6 +10,30 @@ public:
     string name_;
     string phone_;
     string email_;
+    //Функция добавления данных в Person
+    void addPersonToFile(string filename) {
+        string name, phone, email;
+        cout << "Enter person name: ";
+        getline(cin, name);
+        cout << "Enter person phone number: ";
+        getline(cin, phone);
+        cout << "Enter person email address: ";
+        getline(cin, email);
+        Person person(name, phone, email);
+        ofstream outfile;
+        outfile.open(filename, ios_base::app);
+        if (outfile.good()) {
+            outfile << person.name_
+                << "\n" << "Phone: " << person.phone_
+                << "\n" << "Email: " << person.email_
+                << "\n" << endl;
+            cout << "Person added to file." << endl;
+        }
+        else {
+            cout << "Error: could not open file." << endl;
+        }
+        outfile.close();
+    }
 };
 
 class Client : public Person {
@@ -17,36 +41,60 @@ public:
     Client(string name, string phone, string email, string start_date, string end_date) : Person(name, phone, email), start_date_(start_date), end_date_(end_date) {}
     string start_date_;
     string end_date_;
-    //Функция добавления клиента
-    void addClientToFile(string filename) {
-        string name, phone, email, start_date, end_date;
-        cout << "Enter client name: ";
-        getline(cin, name);
-        cout << "Enter client phone number: ";
-        getline(cin, phone);
-        cout << "Enter client email address: ";
-        getline(cin, email);
-        cout << "Enter client start date: ";
-        getline(cin, start_date);
-        cout << "Enter client end date: ";
-        getline(cin, end_date);
-        Client client(name, phone, email, start_date, end_date);
 
-        ofstream outfile;
-        outfile.open(filename, ios_base::app);
-        if (outfile.good()) {
-            outfile << client.name_
-                << "\n" << "Phone: " << client.phone_
-                << "\n" << "Email: " << client.email_
-                << "\n" << "Subscription period: " << client.start_date_ << "-" << client.end_date_
-                << "\n"
-                << endl;
-            cout << "Client added to file." << endl;
+    //Функция добавления клиента из базы данных "persons.txt" в журнал учета клиентов
+    void AddClient(string filename) {
+        string name, phone, email;
+        cout << "Find the person's name ";
+        getline(cin, name);
+        ifstream in_file(filename); // Открываем файл для чтения
+
+        if (!in_file.is_open()) { // Проверяем, удалось ли открыть файл
+            cout << "Error: could not open file " << filename << endl;
+            return;
         }
-        else {
-            cout << "Error: could not open file." << endl;
+        string line;
+        bool found = false;
+        while (getline(in_file, line)) { // Считываем содержимое файла построчно
+            if (line == name) { // Строка с ФИО соответствует искомому клиенту
+                found = true;
+                getline(in_file, phone); // Считываем следующую строку (с телефоном)
+                getline(in_file, email); // Считываем следующую строку (с email)
+                Client client("", "", "", "", "");
+                cout << name << endl;
+                cout << phone << endl;
+                cout << email << endl << endl;
+                cout << "Enter client start date: ";
+                getline(cin, client.start_date_);
+                cout << "Enter client end date: ";
+                getline(cin, client.end_date_);
+                ofstream outfile;
+                string filename = "clients.txt";
+                outfile.open(filename, ios_base::app);
+                if (outfile.good()) {
+                    outfile << name
+                        << "\n" << phone
+                        << "\n" << email
+                        << "\n" << "Subscription period: " << client.start_date_ << "-" << client.end_date_
+                        << "\n"
+                        << endl;
+                    cout << "Client added to file." << endl;
+                }
+                else {
+                    cout << "Error: could not open file." << endl;
+                }
+                outfile.close();
+
+                break;
+            }
         }
-        outfile.close();
+
+        if (!found) { // Искомый клиент не найден в файле
+            cout << "Error: person not found in file." << endl;
+            addPersonToFile("persons.txt");
+        }
+        in_file.close(); // Закрываем файл
+
     }
     // Функция для удаления клиента из файла
     void RemoveClientFromFile(string filename) const {
@@ -111,7 +159,35 @@ public:
     void UpdateClientData(string filename) {
         RemoveClientFromFile("clients.txt");
         cout << "Enter the new update data: " << endl;
-        addClientToFile("clients.txt");
+        string name, phone, email, start_date, end_date;
+        cout << "Enter client name: ";
+        getline(cin, name);
+        cout << "Enter client phone number: ";
+        getline(cin, phone);
+        cout << "Enter client email address: ";
+        getline(cin, email);
+        cout << "Enter client start date: ";
+        getline(cin, start_date);
+        cout << "Enter client end date: ";
+        getline(cin, end_date);
+        Client client(name, phone, email, start_date, end_date);
+
+        ofstream outfile;
+        outfile.open("clients.txt", ios_base::app);
+        if (outfile.good()) {
+            outfile << client.name_
+                << "\n" << "Phone: " << client.phone_
+                << "\n" << "Email: " << client.email_
+                << "\n" << "Subscription period: " << client.start_date_ << "-" << client.end_date_
+                << "\n"
+                << endl;
+            cout << "Client added to file." << endl;
+        }
+        else {
+            cout << "Error: could not open file." << endl;
+        }
+        outfile.close();
+
     }
     // Функция для поиска клиента в файле
     void FindClientFromFile(string filename) {
@@ -239,6 +315,7 @@ int main() {
         cout << "3 - Обновить данные клиента в файле\n";
         cout << "4 - Найти клиента в файле\n";
         cout << "5 - Вывести на экран содержимое файла\n";
+        cout << "6 - Добавить персональные данные\n";
         cout << "0 - выход\n";
 
         int command;
@@ -246,39 +323,51 @@ int main() {
         cin.ignore();
         switch (command) {
         case 1: {
-            Client client("", "", "", "", "");
-            client.addClientToFile("clients.txt");
+            Client client("", "", "", "", "");//Добавить Client в файл
+            client.AddClient("persons.txt");
             break;
         }
-        case 2: {// Call the RemoveClientFromFile() function to remove a client from the file
-            Client client("", "", "", "", "");
+        case 2: {
+            Client client("", "", "", "", ""); //Удалить client из файла
             cout << "Enter the name of the client to remove: ";
             client.RemoveClientFromFile("clients.txt");
-            cout << "The operation is completed" << endl;
+            cout << "Client removed from file." << endl;
             break;
         }
-        case 3: { //Call update
-            Client client("", "", "", "", "");
+        case 3: {
+            Client client("", "", "", "", "");//Обновить client в файле
             cout << "Enter the name of the client to update: ";
             client.UpdateClientData("clients.txt");
-            cout << "The operation is completed" << endl;
             break;
         }
         case 4: {
-            Client client("", "", "", "", "");
+            Client client("", "", "", "", "");//Найти клиента в файле
             client.FindClientFromFile("clients.txt");
             break;
         }
-        case 5: {//Call print clients from file
-            Client client("", "", "", "", "");         
+        case 5: {
+            Client client("", "", "", "", "");//Вывести список клиентов
             client.printFileContents("clients.txt");
             break;
         }
-              break;
+        case 6: {
+            Person person("", "", "");//Добавить Person
+            person.addPersonToFile("persons.txt");
+            break;
         }
-        break; //TO DO  ПРЕДЛОЖИТЬ СНОВА МЕНЮ
-    }
+        
+              // и так далее для всех действий
+        default:
+        // код для обработки недопустимого ввода
+        break;
+    } // конец блока switch
+    break; // добавленный оператор break для завершения блока case 1
+} 
 
+
+
+
+    
     case 2: {
         cout << "Журнал записи на тренировку: \n";
         cout << "Выберите действие:\n";
@@ -295,7 +384,7 @@ int main() {
             print_schedule_from_file("sheduleYoga.txt");
             print_schedule_from_file("sheduleZumba.txt");
             break;
-        }
+        };
         case 2: {
             string full_name, workout_name, workout_date, workout_time;
             cout << "Введите данные тренировки:\n";
@@ -495,5 +584,5 @@ int main() {
 
 
     }
-    return 0;
-}
+          return 0;
+    }

@@ -1,0 +1,67 @@
+@startuml
+
+skin rose
+
+title Classes - Class Diagram
+
+class Person {
+  +name: string
+  +phone: string
+  +email: string
+  +AddPersonToFile(): void
+}
+
+class Client {
+  +season ticket_start_date: string
+  +season ticket_end_date: string
+  +AddClient(): void
+  +RemoveClientFromFile(): void
+  +FindClientFromFile(): void
+  +PrintFileContents(): void
+}
+Client --> Person
+
+class FitnessTrainer {
+  +specialization: string
+  +status: string
+  +AddFitnessTrainer(): void
+  +FindFitnessTrainer(): void
+  +PrintFileTrainerContents(): void
+  +SetStatus(): void
+  +SetSpecialization(): void 
+}
+class Specialization {
+  +Yoga: string
+  +Zumba: string
+}
+class Status {
+  +status_active: string
+  +status_not_active: string
+}
+FitnessTrainer --> Person
+Status*-->FitnessTrainer 
+Specialization*-->FitnessTrainer 
+
+
+class TrainingRecord {
+  +training: string
+  +AddTrainingRecord(): void
+  +RemoveTrainingRecord(): void
+  +FindTrainingRecord(): void
+  +PrintTrainingRecord(): void
+}
+TrainingRecord o-->Client
+TrainingRecord *--> Schedule
+
+class Schedule {
+  +date: string
+  +time: string
+  +AddSchedule(): void
+  +RemoveSchedule(): void
+  +FindSchedule(): void
+  +PrintSchedule(): void
+}
+Schedule o--> FitnessTrainer
+
+
+@enduml

@@ -7,117 +7,133 @@ using namespace std;
 
 class Person {
 public:
+    Person() {}
     Person(string name, string phone, string email) : name_(name), phone_(phone), email_(email) {}
+    virtual void Print(ostream& os) const {
+        os << "Name: " << name_
+            << "\n" << "Phone: " << phone_
+            << "\n" << "Email: " << email_
+            << "\n" << endl;
+    }
+    virtual void Read(istream& is) {
+        cout << "Enter name: ";
+        getline(is, name_);
+        cout << "Enter phone: ";
+        getline(is, phone_);
+        cout << "Enter email: ";
+        getline(is, email_);
+    }
     string name_;
     string phone_;
     string email_;
-    //Функция добавления данных в Person
-void addPersonToFile(string filename) {
-    string name, phone, email;
-    cout << "Enter person name: ";
-    getline(cin, name);
-    cout << "Enter person phone number: ";
-    getline(cin, phone);
-    cout << "Enter person email address: ";
-    getline(cin, email);
-    Person person(name, phone, email);
-    ofstream outfile;
-        outfile.open(filename, ios_base::app);
-        if (outfile.good()) {
-            outfile << person.name_
-                << "\n" << "Phone: " << person.phone_
-                << "\n" << "Email: " << person.email_
-                << "\n" << endl;
-            cout << "Person added to file." << endl;
-        }
-        else {
-            cout << "Error: could not open file." << endl;
-        }
-        outfile.close();
-    }
 };
 
 class Client : public Person {
 public:
+    Client() {}
     Client(string name, string phone, string email, string start_date, string end_date) : Person(name, phone, email), start_date_(start_date), end_date_(end_date) {}
+    void Print(ostream& os) const override {
+        Person::Print(os);
+        os << "Subscription period: " << start_date_ << "-" << end_date_ << "\n" << endl;
+    }
+    void Read(istream& is) override {
+        Person::Read(is);
+        cout << "Enter start date (YYYY-MM-DD): ";
+        getline(is, start_date_);
+        cout << "Enter end date (YYYY-MM-DD): ";
+        getline(is, end_date_);
+    }
+    string GetName() const {
+        return name_;
+    }
     string start_date_;
     string end_date_;
+};
 
-    //Функция добавления клиента из базы данных "persons.txt" в журнал учета клиентов
-void AddClient(string filename) {
-    string name, phone, email;
-    cout << "Find the person's name ";
-    getline(cin, name);
-    ifstream in_file(filename);
-        if (!in_file.is_open()) { 
-            cout << "Error: could not open file " << filename << endl;
-            return;
-        }
+class Trainer : public Person {
+public:
+    Trainer() {}
+    Trainer(string name, string phone, string email, string status, string specialisation) : Person(name, phone, email), status_(status), specialisation_(specialisation) {}
+    void Print(ostream& os) const override {
+        Person::Print(os);
+        os << "Status: " << status_
+            << "\n" << "Specialisation: " << specialisation_
+            << "\n" << endl;
+    }
+    void Read(istream& is) override {
+        Person::Read(is);
+        cout << "Enter status (active/not active): ";
+        getline(is, status_);
+        cout << "Enter specialisation (Yoga/Zumba): ";
+        getline(is, specialisation_);
+    }
+    string GetName() const {
+        return name_;
+    }
+    string status_;
+    string specialisation_;
+};
+class TrainingRecord {
+public:
+    TrainingRecord() {}
+    TrainingRecord(std::shared_ptr<Client> client, std::shared_ptr<Trainer> trainer,
+        std::string date, std::string time)
+        : client_(client), trainer_(trainer), date_(date), time_(time) {}
+
+    void Print(std::ostream& os) const {
+        os << "Training Record:\n"
+            << "Date: " << date_ << "\n"
+            << "Time: " << time_ << "\n"
+            << "Client: " << client_->GetName() << "\n"
+            << "Trainer: " << trainer_->GetName() << "\n";
+    }
+
+private:
+    std::shared_ptr<Client> client_;
+    std::shared_ptr<Trainer> trainer_;
+    std::string date_;
+    std::string time_;
+};
+
+void AddPersonToFile(string filename, const Person& person) {
+    ofstream outfile;
+    outfile.open(filename, ios_base::app);
+    if (outfile.good()) {
+        person.Print(outfile);
+        cout << "Person added to file." << endl;
+    }
+    else {
+        cout << "Error: could not open file." << endl;
+    }
+    outfile.close();
+}
+
+bool FindNameInFile(string filename, string name_) {
+    ifstream infile(filename);
+    if (infile.good()) {
         string line;
-        bool found = false;
-        while (getline(in_file, line)) { 
-            if (line == name) {
-                found = true;
-                getline(in_file, phone); 
-                getline(in_file, email); 
-                Client client("", "", "", "", "");
-                cout << name << endl;
-                cout << phone << endl;
-                cout << email << endl << endl;
-                cout << "Enter client start date: ";
-                getline(cin, client.start_date_);
-                cout << "Enter client end date: ";
-                getline(cin, client.end_date_);
-                ofstream outfile;
-                string filename = "clients.txt";
-                outfile.open(filename, ios_base::app);
-                if (outfile.good()) {
-                    outfile << name
-                        << "\n" << phone
-                        << "\n" << email
-                        << "\n" << "Subscription period: " << client.start_date_ << "-" << client.end_date_
-                        << "\n"
-                        << endl;
-                    cout << "Client added to file." << endl;
-                }
-                else {
-                    cout << "Error: could not open file." << endl;
-                }
-                outfile.close();
-
-                break;
+        while (getline(infile, line)) {
+            if (line.find("Name: ") == 0 && line.find(name_) != string::npos) {
+                return true;
             }
         }
-
-        if (!found) { // Искомый клиент не найден в файле
-            cout << "Error: person not found in file." << endl;
-            addPersonToFile("persons.txt");
-        }
-        in_file.close(); // Закрываем файл
-
     }
-    // Функция для удаления клиента из файла
-void RemoveClientFromFile(string filename) const {
-     string name;
-     getline(cin, name);
-     ifstream infile(filename);
-     ofstream outfile("temp.txt");
-        if (!infile.is_open()) {
-            cerr << "Error: could not open input file." << endl;
-            return;
-        }
-        if (!outfile.is_open()) {
-            cerr << "Error: could not open output file." << endl;
-            infile.close();
-            return;
-        }
+    return false;
+}
+
+void DeletePersonFromFile(string filename, string name) {
+    ifstream infile(filename);
+    ofstream outfile("temp.txt");
+    if (infile.good() && outfile.good()) {
         string line;
         bool found = false;
         while (getline(infile, line)) {
-            if (line == name) {
-               found = true;
-               while (getline(infile, line)) {
-                    if (line.empty()) {
+            if (line.find("Name: ") == 0 && line.substr(6) == name) {
+                found = true;
+                // skip lines until the next name is found
+                while (getline(infile, line)) {
+                    if (line.find("Name: ") == 0) {
+                        infile.seekg(-static_cast<int>(line.length()) - 1, ios::cur);
                         break;
                     }
                 }
@@ -126,60 +142,62 @@ void RemoveClientFromFile(string filename) const {
                 outfile << line << endl;
             }
         }
-        infile.close();
-        outfile.close();
         if (found) {
+            cout << "Person deleted from file." << endl;
             remove(filename.c_str());
             rename("temp.txt", filename.c_str());
         }
         else {
-            cout << "Error: client not found in file." << endl;
+            cout << "Error: name not found in file." << endl;
             remove("temp.txt");
         }
     }
-// Функция для поиска клиента в файле
-void FindClientFromFile(string filename) {
-     string name, phone, email, start_date, end_date;
-     cout << "Enter a name to search for: ";
-     getline(cin, name);
-     ifstream in_file(filename); 
-        if (!in_file.is_open()) { 
-            cout << "Error: could not open file." << filename << endl;
-            return;
+    else {
+        cout << "Error: could not open file." << endl;
+    }
+    infile.close();
+    outfile.close();
+}
+void DisplayFileContents(string filename) {
+    ifstream infile(filename);
+    if (infile.good()) {
+        string line;
+        while (getline(infile, line)) {
+            cout << line << endl;
         }
+    }
+    else {
+        cout << "Error: could not open file." << endl;
+    }
+    infile.close();
+}
+void DisplayPersonInfo(string filename, string name) {
+    ifstream infile(filename);
+    if (infile.good()) {
         string line;
         bool found = false;
-        while (getline(in_file, line)) { 
-            if (line == name) { 
+        while (getline(infile, line)) {
+            if (line.find("Name: ") == 0 && line.substr(6) == name) {
                 found = true;
                 cout << line << endl;
-                getline(in_file, line); 
-                cout << "Phone: " << line.substr(line.find(":") + 2) << endl;
-                getline(in_file, line); 
-                cout << "Email: " << line.substr(line.find(":") + 2) << endl;
-                getline(in_file, line); 
-                cout << "Subscription period: " << line.substr(line.find(":") + 2) << endl;
+                while (getline(infile, line)) {
+                    if (line.find("Name: ") == 0) {
+                        infile.seekg(-static_cast<int>(line.length()) - 1, ios::cur);
+                        break;
+                    }
+                    else {
+                        cout << line << endl;
+                    }
+                }
                 break;
             }
         }
-        if (!found) { 
-            cout << "Error: client not found in file." << endl;
+        if (!found) {
+            cout << "Error: name not found in file." << endl;
         }
-        in_file.close(); 
     }
-//Вывод списка клиентов:
-void printFileContents(string filename) {
-        ifstream infile(filename);
-        if (infile.good()) {
-            string line;
-            while (getline(infile, line)) {
-                cout << line << endl;
-            }
-        }
-        else {
-            cout << "Error: could not open file." << endl;
-        }
-        infile.close();
+    else {
+        cout << "Error: could not open file." << endl;
     }
-
-};
+    infile.close();
+}

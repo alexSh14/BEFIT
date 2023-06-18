@@ -1,10 +1,4 @@
-Name: Rt
-Phone: 1
-Email: 1
-Subscription period: 2023.06.01-2023.07.01
-
-
-Name: Tt
+ame: Tt
 Phone: 1
 Email: 1
 
@@ -20,10 +14,4 @@ Phone: 7777
 Email: 7777
 
 Subscription period: 777-777
-
-Name: Po
-Phone: 1
-Email: 1
-
-Subscription period: 1-1
 

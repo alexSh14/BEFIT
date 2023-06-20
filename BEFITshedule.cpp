@@ -1,5 +1,6 @@
 ﻿#include "Header.h"
 #include "Persons.h"
+#include "Update.h"
 using namespace std;
 int main() {
     setlocale(LC_ALL, "rus");
@@ -11,6 +12,7 @@ int main() {
     cout << "4 - Удалить запись из файла по имени\n";
     cout << "6 - Вывести содержимое файла на экран\n";
     cout << "7 - Вывести информацию по имени из файла на экран\n";
+    cout << "8 - Обновить информацию по имени из файла\n";
 
 
     int command;
@@ -59,6 +61,19 @@ int main() {
         cout << "Введите имя, которое нужно найти: ";
         getline(cin, name);
         DisplayPersonInfo(filename, name);
+        break;
+    }
+    case 7: {
+        string filename;
+        cout << "Введите имя файла: ";
+        getline(cin, filename);
+        DisplayFileContents(filename);
+        break;
+    }
+    case 8: {
+        string filename = "clients";
+        UpdatePersonDataById(filename);
+
         break;
     }
     default:

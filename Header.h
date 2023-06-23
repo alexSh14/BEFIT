@@ -8,32 +8,41 @@
 using namespace std;
 
 void DeletePersonFromFile(string filename, string name) {
+    setlocale(LC_ALL, "rus");
     ifstream infile(filename);
     ofstream outfile("temp.txt");
 
-    if (infile.good() && outfile.good()) {
-        string line;
-        bool found = false;
+    if (!infile.good() || !outfile.good()) {
+        cout << "Error: could not open file." << endl;
+        return;
+    }
 
-        while (getline(infile, line)) {
-            if (line.find("Name: ") == 0 && line.substr(6) == name) {
-                found = true;
+    string line;
+    bool found = false;
+    bool deleted = false;
 
-                // skip lines until the next name is found
-                while (getline(infile, line)) {
-                    if (line.find("Name: ") == 0) {
-                        infile.seekg(-static_cast<int>(line.length()) - 1, ios::cur);
-                        break;
-                    }
+    while (getline(infile, line)) {
+        if (line.find("Name: ") == 0 && line.substr(6) == name) {
+            found = true;
+            deleted = true;
+            // Пропускаем все строки до следующей записи
+            while (getline(infile, line)) {
+                if (line.find("Name: ") == 0) {
+                    infile.seekg(-static_cast<int>(line.length()) - 1, ios::cur);
+                    break;
                 }
             }
-            else {
-                outfile << line << endl;
-            }
         }
+        else {
+            outfile << line << endl;
+        }
+    }
 
-        if (found) {
+    if (found) {
+        if (deleted) {
             cout << "Person deleted from file." << endl;
+            infile.close();
+            outfile.close();
             remove(filename.c_str());
             rename("temp.txt", filename.c_str());
         }
@@ -43,11 +52,9 @@ void DeletePersonFromFile(string filename, string name) {
         }
     }
     else {
-        cout << "Error: could not open file." << endl;
+        cout << "Error: name not found in file." << endl;
+        remove("temp.txt");
     }
-
-    infile.close();
-    outfile.close();
 }
 
 void DisplayFileContents(string filename) {
@@ -105,21 +112,7 @@ void DisplayPersonInfo(string filename, string name) {
     infile.close();
 }
 
-bool FindNameInFile(string filename, string name_) {
-    ifstream infile(filename);
 
-    if (infile.good()) {
-        string line;
-
-        while (getline(infile, line)) {
-            if (line.find("Name: ") == 0 && line.find(name_) != string::npos) {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
 
 void AddPersonToFile(string filename, const Person& person) {
     ofstream outfile(filename, ios_base::app);
@@ -177,7 +170,7 @@ string SelectTrainingDate(const string& scheduleFile) {
     file.close();
     return training_date;
 }
-void AddPerson(const string& filename, const string& type) {
+void Add(const string& filename, const string& type) {
     string name;
     cout << "Поиск имени в файле:\n";
     cout << "Введите имя: ";

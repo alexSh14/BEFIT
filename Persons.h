@@ -36,7 +36,7 @@ public:
     Client(string name, string phone, string email, string start_date, string end_date) : Person(name, phone, email), start_date_(start_date), end_date_(end_date) {}
     void Print(ostream& os) const override {
         Person::Print(os);
-        os << "Subscription period: " << start_date_ << "-" << end_date_ << "\n" << endl;
+        os << "Subscription period: " << start_date_ << "-" << end_date_ << "\n";
     }
     void Read(istream& is) override {
         Person::Read(is);
@@ -60,7 +60,7 @@ public:
         Person::Print(os);
         os << "Status: " << status_
             << "\n" << "Specialisation: " << specialisation_
-            << "\n" << endl;
+            << "\n";
     }
     void Read(istream& is) override {
         Person::Read(is);

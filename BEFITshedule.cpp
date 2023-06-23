@@ -4,14 +4,14 @@
 using namespace std;
 int main() {
     setlocale(LC_ALL, "rus");
-    cout << "Журнал учета клиентов,тренеров и тренеровок: \n";
+    cout << "Журнал учета клиентов,тренеров и тренировок: \n";
     cout << "Выберите действие:\n";
     cout << "1 - Добавить клиента в файл\n";
     cout << "2 - Добавить тренера в файл\n";
-    cout << "3 - Записать на тренировку\n";
+    cout << "3 - Добавить запись на тренировку\n";
     cout << "4 - Удалить запись из файла по имени\n";
-    cout << "6 - Вывести содержимое файла на экран\n";
-    cout << "7 - Вывести информацию по имени из файла на экран\n";
+    cout << "5 - Вывести содержимое файла на экран\n";
+    cout << "6 - Вывести информацию по имени из файла на экран\n";
    
 
 
@@ -20,40 +20,38 @@ int main() {
     cin.ignore();
     switch (command) {
     case 1: {
-        AddPerson("clients", "Client");
+        Add("clients", "Client");//Добавить клиента в файл
         break;
     }
     case 2: {
-        AddPerson("trainers", "Trainer");
+        Add("trainers", "Trainer");//Добавить тренера в файл
         break;
     }
     case 3: {
-        AddPerson("Journal_training", "WorkoutRecords");
+        Add("Journal_training", "WorkoutRecords");//Добавить запись на тренировку
         break;
     }
-    case 4: {
+    case 4: {//Удалить запись из файла по имени
         string filename;
-        cout << "Введите имя файла: ";
+        cout << "Введите имя файла (clients/trainers/Journal_training): ";
         getline(cin, filename);
         string name;
         cout << "Введите имя, которое нужно удалить: ";
         getline(cin, name);
-        if (FindNameInFile(filename, name)) {
+        
             DeletePersonFromFile(filename, name);
-        }
-        else {
-            cout << "Имя не найдено в файле." << endl;
-        }
+       
+        
         break;
     }
-    case 5: {
+    case 5: {//Вывести содержимое файла на экран
         string filename;
-        cout << "Введите имя файла: ";
+        cout << "Введите имя файла (clients/trainers/Journal_training): ";
         getline(cin, filename);
         DisplayFileContents(filename);
         break;
     }
-    case 6: {
+    case 6: {//Вывести информацию по имени из файла на экран
         string filename;
         cout << "Введите имя файла (clients/trainers/Journal_training): ";
         getline(cin, filename);
@@ -63,14 +61,7 @@ int main() {
         DisplayPersonInfo(filename, name);
         break;
     }
-    case 7: {
-        string filename;
-        cout << "Введите имя файла (clients/trainers/Journal_training): ";
-        getline(cin, filename);
-        DisplayFileContents(filename);
-        break;
-    }
-    
+       
     default:
         cout << "Неправильный ввод команды." << endl;
         break;

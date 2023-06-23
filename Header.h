@@ -195,7 +195,7 @@ void AddPerson(const string& filename, const string& type) {
         if (line.find("Name: ") == 0 && line.substr(6) == name) {
             found = true;
             cout << "¬веденное им€ существует в файле: \n";
-            DisplayFileContents(filename);
+            DisplayPersonInfo(filename,name);
             if (type == "WorkoutRecords") {
                 cout << "’отите добавить запись? (y/n): ";
                 char choice;

@@ -1,0 +1,43 @@
+# Игнорирование файлов компиляции и объектных файлов
+*.o
+*.obj
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Игнорирование файлов конфигурации и сборки проекта
+*.cfg
+*.ini
+*.log
+*.pc
+*.pcd
+*.pdb
+*.swp
+*.swo
+*.tmp
+*.tmp.*
+*.user
+*.vcproj.*
+*.vcxproj.*
+*.sdf
+*.opensdf
+*.sln
+*.suo
+*.idb
+*.pdb
+*.depend
+*.layout
+*.aps
+*.clw
+*.ncb
+*.opt
+*.plg
+*.bsc
+*.obj
+*.exe
+*.ilk
+*.tlog
+
+# Игнорирование папки сборки
+build/

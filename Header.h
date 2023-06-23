@@ -25,7 +25,7 @@ void DeletePersonFromFile(string filename, string name) {
         if (line.find("Name: ") == 0 && line.substr(6) == name) {
             found = true;
             deleted = true;
-            // Пропускаем все строки до следующей записи
+          
             while (getline(infile, line)) {
                 if (line.find("Name: ") == 0) {
                     infile.seekg(-static_cast<int>(line.length()) - 1, ios::cur);
@@ -172,13 +172,13 @@ string SelectTrainingDate(const string& scheduleFile) {
 }
 void Add(const string& filename, const string& type) {
     string name;
-    cout << "Поиск имени в файле:\n";
-    cout << "Введите имя: ";
+    cout << "Searching for a name in a file: \n";
+    cout << "Enter name: ";
     getline(cin >> ws, name);
 
     ifstream file(filename);
     if (!file.is_open()) {
-        cout << "Не удается открыть файл " << filename << endl;
+        cout << "Error: could not open file. " << filename << endl;
         return;
     }
 
@@ -187,17 +187,17 @@ void Add(const string& filename, const string& type) {
     while (getline(file, line)) {
         if (line.find("Name: ") == 0 && line.substr(6) == name) {
             found = true;
-            cout << "Введенное имя существует в файле: \n";
+            cout << "The entered name exists in the file: \n";
             DisplayPersonInfo(filename,name);
             if (type == "WorkoutRecords") {
-                cout << "Хотите добавить запись? (y/n): ";
+                cout << "Want to add an entry? (y/n): ";
                 char choice;
                 cin >> choice;
                 cin.ignore();
                 if ((choice == 'y') || (choice == 'Y')) {
-                    cout << "Выберите тренировку: " << std::endl;
-                    cout << "1 - Йога\n";
-                    cout << "2 - Зумба\n";
+                    cout << "Choose a workout: " << std::endl;
+                    cout << "1 - Yoga\n";
+                    cout << "2 - Zumba\n";
                     int training_name;
                     cin >> training_name;
                     cin.ignore();
@@ -210,10 +210,10 @@ void Add(const string& filename, const string& type) {
                                 file << "Name: " << name << "\n";
                                 file << selected_date << "\n";
                                 file.close();
-                                cout << "Запись на тренировку добавлена!" << endl;
+                                cout << "Training record added!" << endl;
                             }
                             else {
-                                cout << "Не удается открыть файл Journal_training" << endl;
+                                cout << "Unable to open file Journal_training" << endl;
                             }
                         }
                         break;
@@ -226,16 +226,16 @@ void Add(const string& filename, const string& type) {
                                 file << "Name: " << name << "\n";
                                 file << selected_date << "\n";
                                 file.close();
-                                cout << "Запись на тренировку добавлена!" << endl;
+                                cout << "Training record added!" << endl;
                             }
                             else {
-                                cout << "Не удается открыть файл Journal_training" << endl;
+                                cout << "Unable to open file Journal_training" << endl;
                             }
                         }
                         break;
                     }
                     default: {
-                        cout << "Неверный выбор даты!" << endl;
+                        cout << "Wrong date selection!" << endl;
                         break;
                     }
                     }
@@ -248,8 +248,8 @@ void Add(const string& filename, const string& type) {
     file.close();
 
     if (!found) {
-        cout << "Имя не найдено!" << endl;
-        cout << "Хотите добавить запись? (y/n): ";
+        cout << "Name not found!" << endl;
+        cout << "Want to add an entry? (y/n): ";
         char choice;
         cin >> choice;
         cin.ignore();
@@ -265,15 +265,15 @@ void Add(const string& filename, const string& type) {
                 AddPersonToFile(filename, trainer);
             }
             else if (type == "WorkoutRecords") {
-                std::cout << "Введите имя: ";
-                std::getline(cin >> ws, name);
-                std::ofstream file("Journal_training", ios::app);
-                if (file.is_open()) {
+                cout << "Enter name: ";
+                getline(cin >> ws, name);
+                ofstream file("Journal_training", ios::app);
+                    if (file.is_open()) {
                     file << "Name: " << name << "\n";
                     file.close();
-                    cout << "Выберите тренировку: " << endl;
-                    cout << "1 - Йога\n";
-                    cout << "2 - Зумба\n";
+                    cout << "Choose a workout: " << endl;
+                    cout << "1 - Yoga\n";
+                    cout << "2 - Zumba\n";
                     int training_name;
                     cin >> training_name;
                     cin.ignore();
@@ -286,10 +286,10 @@ void Add(const string& filename, const string& type) {
                                 file << "Name: " << name << "\n";
                                 file << selected_date << "\n";
                                 file.close();
-                                cout << "Запись на тренировку добавлена!" << std::endl;
+                                cout << "Training record added!" << std::endl;
                             }
                             else {
-                                cout << "Не удается открыть файл Journal_training" << endl;
+                                cout << "Unable to open file Journal_training" << endl;
                             }
                         }
                         break;
@@ -302,22 +302,22 @@ void Add(const string& filename, const string& type) {
                                 file << "Name: " << name << "\n";
                                 file << selected_date << "\n";
                                 file.close();
-                                cout << "Запись на тренировку добавлена!" << endl;
+                                cout << "Training record added!" << endl;
                             }
                             else {
-                                cout << "Не удается открыть файл Journal_training" << endl;
+                                cout << "Unable to open file Journal_training" << endl;
                             }
                         }
                         break;
                     }
                     default: {
-                        cout << "Неверный выбор даты!" << endl;
+                        cout << "Wrong date selection!!" << endl;
                         break;
                     }
                     }
                 }
                 else {
-                    cout << "Не удается открыть файл Journal_training" << endl;
+                    cout << "Unable to open file Journal_training" << endl;
                 }
             }
         }
